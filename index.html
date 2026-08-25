@@ -44,7 +44,7 @@
  
 <!-- 圖示 1：成員 (精確置入成員縮圖網址) -->  
  
-<a href="javascript:void(0)" onclick="window.top.location.href='https://sites.google.com/view/straybaseball-team/%E6%88%90%E5%93%A1';" class="icon icon-1 active"> <span class="icon-content">  
+<a href="#" onclick="clickToNavigate(0,event)" class="icon icon-1 active"> 
  
 <img src="https://i.ibb.co/43KnNPZ/image.png" class="small-logo-img" alt="成員">  
  
@@ -56,8 +56,7 @@
  
 <!-- 圖示 2：最新消息 (精確置入最新消息縮圖網址) -->  
  
-<a href="javascript:void(0)" onclick="window.top.location.href='https://sites.google.com/view/straybaseball-team/%E6%9C%80%E6%96%B0%E6%B6%88%E6%81%AF';" class="icon icon-2">  
- 
+<a href="#" onclick="clickToNavigate(1,event)" class="icon icon-2"> 
 <img src="https://i.ibb.co/vxqczqJ3/icon.png" class="small-logo-img" alt="最新消息">  
  
 </span>  
@@ -68,7 +67,7 @@
  
 <!-- 圖示 3：比賽賽程 (最穩定的網頁內建 Emoji) -->  
  
-<a href="javascript:void(0)" onclick="window.top.location.href='https://sites.google.com/view/straybaseball-team/%E6%AF%94%E8%B3%BD%E6%88%B0%E7%B8%BE';" class="icon icon-3">  
+<a href="javascript:void(0)" onclick="window.top.location.href='https://sites.google.com/view/straybaseball-team/%E6%AF%94%E8%B3%BD%E6%88%B0%E7%B8%BE';" class="icon icon-3"> 
 <span class="icon-content">⚾</span>  
  
 </a>  
@@ -77,9 +76,7 @@
  
 <!-- 圖示 4：關於我們 (精確置入小狼頭隊徽網址) -->  
  
-<a href="javascript:void(0)" onclick="window.top.location.href='https://sites.google.com/view/straybaseball-team/%E9%97%9C%E6%96%BC%E6%88%91%E5%80%91';" class="icon icon-4"> 
-<span class="icon-content">  
- 
+<a href="#" onclick="clickToNavigate(3,event)" class="icon icon-4"> 
 <img src="https://i.ibb.co/rCptGSd/STRAYICON.png" class="small-logo-img" alt="關於我們">  
  
 </span>  
@@ -248,7 +245,17 @@ function goPage(url) {
  
 const circle = document.getElementById('rotating-circle');  
 
-const pageLinks = [ "https://sites.google.com/view/straybaseball-team/%E6%88%90%E5%93%A1", "https://sites.google.com/view/straybaseball-team/%E6%9C%80%E6%96%B0%E6%B6%88%E6%81%AF", "https://sites.google.com/view/straybaseball-team/%E6%AF%94%E8%B3%BD%E6%88%B0%E7%B8%BE", "https://sites.google.com/view/straybaseball-team/%E9%97%9C%E6%96%BC%E6%88%91%E5%80%91" ]; 
+const pageLinks = [ 
+
+"https://sites.google.com/view/straybaseball-team/%E6%88%90%E5%93%A1", 
+
+"https://sites.google.com/view/straybaseball-team/%E6%9C%80%E6%96%B0%E6%B6%88%E6%81%AF", 
+
+"https://sites.google.com/view/straybaseball-team/%E6%AF%94%E8%B3%BD%E6%88%B0%E7%B8%BE", 
+
+"https://sites.google.com/view/straybaseball-team/%E9%97%9C%E6%96%BC%E6%88%91%E5%80%91" 
+
+]; 
  
 let rotationDegree = 0; 
  let currentStep = 0;  
@@ -322,7 +329,11 @@ startAutoPlay();
 
 setTimeout(() => { 
 
-  window.open(pageLinks[targetStep], "_self"); 
+  
+
+  window.top.location.href = pageLinks[targetStep]; 
+
+  
 
 },1100); 
 
