@@ -44,7 +44,7 @@
  
 <!-- 圖示 1：成員 (精確置入成員縮圖網址) -->  
  
-<a href="#" onclick="clickToNavigate(0, event)" target="_top" class="icon icon-1 active" id="menu-icon-0" title="成員">  
+<a href="javascript:void(0)" onclick="goPage('https://sites.google.com/d/1rDnYtRJPU0SRBeli3mGtv0z3Ke-Ztg6d/p/1syLQ0G2nkwt_2_CHYtqinYoSlh8vX1gL/edit')" class="icon icon-1 active">  
  
 <span class="icon-content">  
  
@@ -58,9 +58,7 @@
  
 <!-- 圖示 2：最新消息 (精確置入最新消息縮圖網址) -->  
  
-<a href="#" onclick="clickToNavigate(1, event)" target="_top" class="icon icon-2" id="menu-icon-1" title="最新消息">  
- 
-<span class="icon-content">  
+<a href="javascript:void(0)" onclick="goPage('https://sites.google.com/d/1rDnYtRJPU0SRBeli3mGtv0z3Ke-Ztg6d/p/1vOV64a5E0m73L9_P4tib5XvDcrZ7S9Wk/edit')" class="icon icon-2"> <span class="icon-content">  
  
 <img src="https://i.ibb.co/vxqczqJ3/icon.png" class="small-logo-img" alt="最新消息">  
  
@@ -72,8 +70,7 @@
  
 <!-- 圖示 3：比賽賽程 (最穩定的網頁內建 Emoji) -->  
  
-<a href="#" onclick="clickToNavigate(2, event)" target="_top" class="icon icon-3" id="menu-icon-2" title="比賽賽程" style="font-size: inherit;">  
- 
+<a href="javascript:void(0)" onclick="goPage('https://sites.google.com/d/1rDnYtRJPU0SRBeli3mGtv0z3Ke-Ztg6d/p/1ZBaAeIpxWnuuH-XpDG1hojZjPoAlA5px/edit')" class="icon icon-3"> 
 <span class="icon-content">⚾</span>  
  
 </a>  
@@ -82,7 +79,7 @@
  
 <!-- 圖示 4：關於我們 (精確置入小狼頭隊徽網址) -->  
  
-<a href="#" onclick="clickToNavigate(3, event)" target="_top" class="icon icon-4" id="menu-icon-3" title="關於我們">  
+<a href="javascript:void(0)" onclick="goPage('https://sites.google.com/d/1rDnYtRJPU0SRBeli3mGtv0z3Ke-Ztg6d/p/1f3vZyXw1Z9W60vTVm53kvhqyjSVnq9i9/edit')" class="icon icon-4"> 
  
 <span class="icon-content">  
  
@@ -245,6 +242,11 @@ transition: transform 1.1s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s;
  
 <script>  
 const container = document.getElementById('carousel-container');  
+function goPage(url) { 
+
+  window.open(url, "_top"); 
+
+} 
 const circle = document.getElementById('rotating-circle');  
 
 const pageLinks = [ 
