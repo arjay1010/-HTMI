@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>棒球壘包互動儀表板</title>
+    <title>棒球菱形互動儀表板</title>
     <style>
         * {
             box-sizing: border-box;
@@ -36,14 +36,14 @@
             object-fit: cover;
         }
 
-        /* 黑色半透明遮罩：突顯前方金色線條並保持低調奢華感 */
+        /* 黑色半透明遮罩 */
         .overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.65);
+            background: rgba(0, 0, 0, 0.7);
             z-index: -1;
         }
 
@@ -57,134 +57,121 @@
             align-items: center;
         }
 
-        /* 棒球場核心尺寸 */
-        .baseball-diamond {
+        /* 大型菱形外框 */
+        .large-diamond-orbit {
             position: relative;
-            width: 500px;
-            height: 500px;
+            width: 480px;
+            height: 480px;
+            border: 2px solid rgba(184, 151, 66, 0.4);
+            transform: rotate(45deg);
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        /* 內野大圓軌道線（對應圖一圓圈） */
-        .inner-orbit-line {
+        /* 四個角落的互動壘包 */
+        .base-node {
             position: absolute;
-            width: 320px;
-            height: 320px;
-            border: 1px solid rgba(184, 151, 66, 0.4);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-
-        /* 內野鑽石四方線條（相連四個壘包的菱形） */
-        .diamond-lines {
-            position: absolute;
-            width: 280px;
-            height: 280px;
+            width: 85px;
+            height: 85px;
+            background-color: rgba(15, 15, 15, 0.9);
             border: 3px solid #b89742;
-            transform: rotate(45deg);
-            pointer-events: none;
-            box-shadow: 0 0 15px rgba(184, 151, 66, 0.2);
-        }
-
-        /* 壘包基礎樣式（旋轉45度正方形） */
-        .base {
-            position: absolute;
-            width: 32px;
-            height: 32px;
-            background-color: rgba(20, 20, 20, 0.85);
-            border: 3px solid #b89742;
-            transform: rotate(45deg);
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             z-index: 10;
         }
 
-        .base:hover {
-            background-color: #b89742;
-            box-shadow: 0 0 15px #b89742;
-            transform: rotate(45deg) scale(1.15);
-        }
-
-        /* 四個壘包精準定位 */
-        .home-plate { /* 本壘 (下方) */
-            bottom: -16px;
-        }
-
-        .first-base { /* 一壘 (右方) */
-            right: -16px;
-        }
-
-        .second-base { /* 二壘 (上方) */
-            top: -16px;
-        }
-
-        .third-base { /* 三壘 (左方) */
-            left: -16px;
-        }
-
-        /* 中央投手丘：依需求改為正方形壘包形狀，移除了圓圈與狼頭 */
-        .pitchers-mound {
-            position: absolute;
-            width: 45px;
-            height: 45px;
-            background-color: rgba(25, 25, 25, 0.9);
-            border: 3.5px solid #b89742;
-            transform: rotate(45deg);
-            box-shadow: inset 0 0 8px rgba(184, 151, 66, 0.5), 0 0 12px rgba(184, 151, 66, 0.3);
-            z-index: 5;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .pitchers-mound:hover {
-            box-shadow: inset 0 0 12px rgba(184, 151, 66, 0.8), 0 0 20px #b89742;
-            transform: rotate(45deg) scale(1.08);
-        }
-
-        /* 環繞外圍的功能圖標（對應圖一圓環上的各個按鈕位置與文字風格） */
-        .orbit-btn {
-            position: absolute;
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background-color: rgba(15, 15, 15, 0.9);
-            border: 2px solid #b89742;
+        /* 內容物轉回正向 */
+        .base-content {
+            transform: rotate(-45deg);
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             color: #b89742;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            padding: 5px;
+        }
+
+        /* 壘包內的圖片 Icon 樣式 */
+        .base-icon-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            margin-bottom: 4px;
+            transition: transform 0.3s ease;
+        }
+
+        /* 壘包文字 */
+        .base-text {
             font-size: 11px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 15;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            text-decoration: none;
+            font-weight: 900;
+            letter-spacing: 1px;
         }
 
-        .orbit-btn:hover {
+        /* 懸停效果 */
+        .base-node:hover {
+            transform: scale(1.18);
             background-color: #b89742;
+            box-shadow: 0 0 25px #b89742;
+            border-color: #fff;
+        }
+
+        .base-node:hover .base-content {
             color: #000;
-            box-shadow: 0 0 15px #b89742;
-            transform: scale(1.15);
         }
 
-        /* 圖標按鈕的精準位置分佈 */
-        .btn-top { top: 40px; }
-        .btn-left { left: 40px; }
-        .btn-right { right: 40px; }
-        .btn-bottom { bottom: 60px; }
+        /* 讓圖片在懸停時稍微放大 */
+        .base-node:hover .base-icon-img {
+            transform: scale(1.1);
+        }
 
-        .orbit-btn span {
+        /* 點擊選取效果 */
+        .base-node.selected {
+            transform: scale(1.3);
+            background-color: #fff;
+            border-color: #b89742;
+            box-shadow: 0 0 35px #fff, 0 0 15px #b89742;
+            animation: pulse 0.5s infinite alternate;
+        }
+
+        .base-node.selected .base-content {
+            color: #000;
+        }
+
+        /* 精準定位在大型菱形的四個頂點 */
+        .top-base { top: -42.5px; left: -42.5px; }
+        .right-base { top: -42.5px; right: -42.5px; }
+        .bottom-base { bottom: -42.5px; right: -42.5px; }
+        .left-base { bottom: -42.5px; left: -42.5px; }
+
+                /* 中央迷你裝飾壘包（無狼頭） */
+        .center-mound {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(184, 151, 66, 0.6);
+            background-color: rgba(20, 20, 20, 0.5);
+            box-shadow: inset 0 0 10px rgba(184, 151, 66, 0.3);
             pointer-events: none;
+            border-radius: 50%; /* 👈 加上這行，立刻變成圓形 */
         }
 
-        /* 響應式手機版縮放 */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 20px #fff; }
+            100% { box-shadow: 0 0 40px #b89742; }
+        }
+
         @media (max-width: 600px) {
-            .baseball-diamond {
-                transform: scale(0.75);
+            .large-diamond-orbit {
+                transform: rotate(45deg) scale(0.7);
             }
         }
     </style>
@@ -193,58 +180,103 @@
 
     <!-- 背景影片區 -->
     <div class="video-background">
-        <!-- 預設帶入一組科技感的動態粒子影片作為展示，您可以將 src 替換為您的影片網址 -->
-        <video autoplay loop muted playsinline>
-            <source src="https://mixkit.co" type="video/mp4">
-            您的瀏覽器不支援 HTML5 影片。
-        </video>
+        <video id="bgVideo" autoplay loop muted playsinline></video>
     </div>
 
-    <!-- 半透明深色遮罩層 -->
     <div class="overlay"></div>
 
-    <!-- 主要內容區 -->
     <div class="container">
-        <div class="baseball-diamond">
+        <div class="large-diamond-orbit">
             
-            <!-- 內野大圓軌道線 -->
-            <div class="inner-orbit-line"></div>
+            <div class="center-mound"></div>
             
-            <!-- 內野鑽石四方線（四個頂點即為壘包） -->
-            <div class="diamond-lines">
-                <div class="base second-base" title="二壘 / 數據統計" onclick="handleBaseClick('二壘')"></div>
-                <div class="base first-base" title="一壘 / 球隊賽程" onclick="handleBaseClick('一壘')"></div>
-                <div class="base third-base" title="三壘 / 球員名冊" onclick="handleBaseClick('三壘')"></div>
-                <div class="base home-plate" title="本壘 / 回首頁" onclick="handleBaseClick('本壘')"></div>
+            <!-- 頂部壘包 -->
+            <div class="base-node top-base" onclick="handleBaseClick('top')">
+                <div class="base-content">
+                    <img id="topIcon" class="base-icon-img" src="" alt="icon">
+                    <span class="base-text">NEWS</span>
+                </div>
             </div>
 
-            <!-- 中央 45度轉角正方形壘包（取代原本的圓形與狼頭） -->
-            <div class="pitchers-mound" title="投手丘 / 核心控制" onclick="handleBaseClick('投手丘')"></div>
+            <!-- 右側壘包 -->
+            <div class="base-node right-base" onclick="handleBaseClick('right')">
+                <div class="base-content">
+                    <img id="rightIcon" class="base-icon-img" src="" alt="icon">
+                    <span class="base-text">STAT</span>
+                </div>
+            </div>
 
-            <!-- 環繞外圍功能圖標（可自行在 href 中填入對應的網頁網址） -->
-            <a href="#news" class="orbit-btn btn-top" title="最新消息">
-                <span>NEWS</span>
-            </a>
-            <a href="#live" class="orbit-btn btn-left" title="線上直播">
-                <span>LIVE</span>
-            </a>
-            <a href="#stats" class="orbit-btn btn-right" title="歷史數據">
-                <span>STAT</span>
-            </a>
-            <a href="#tickets" class="orbit-btn btn-bottom" title="門票購買">
-                <span>TIX</span>
-            </a>
+            <!-- 底部壘包 -->
+            <div class="base-node bottom-base" onclick="handleBaseClick('bottom')">
+                <div class="base-content">
+                    <img id="bottomIcon" class="base-icon-img" src="" alt="icon">
+                    <span class="base-text">LIVE</span>
+                </div>
+            </div>
+
+            <!-- 左側壘包 -->
+            <div class="base-node left-base" onclick="handleBaseClick('left')">
+                <div class="base-content">
+                    <img id="leftIcon" class="base-icon-img" src="" alt="icon">
+                    <span class="base-text">STRAY</span>
+                </div>
+            </div>
 
         </div>
     </div>
 
     <script>
-        // 壘包或中央按鈕點擊後的 JavaScript 邏輯
-        function handleBaseClick(baseName) {
-            console.log('您點擊了：' + baseName);
-            // 這裡可以寫點擊後的動作，例如網頁跳轉：
-            // if(baseName === '本壘') { window.location.href = 'https://...'; }
-            alert('您點擊了【' + baseName + '】！');
+        // ==========================================
+        // 🔥【自訂設定區】請在這裡修改您的網址與圖片
+        // ==========================================
+        
+        const config = {
+            // 1. 全螢幕背景影片網址 (必須是直連 .mp4 檔案的網址)
+            videoUrl: "test.mp4",
+
+            // 2. 四個壘包的圖片 Icon 網址 (填入圖片連結，建議用去背的 PNG 檔)
+            icons: {
+                top:    "https://i.ibb.co/rCptGSd/STRAYICON.png", // NEWS 圖標
+                right:  "https://i.ibb.co/W4K1DWsJ/500px-2023-Facebook-icon-svg.webp",   // STAT 圖標
+                bottom: "https://i.ibb.co/0j5RpbFs/500px-Instagram-icon.webp", // LIVE 圖標
+                left:   "https://i.ibb.co/LXN2tf5N/960px-You-Tube-full-color-icon-2017-svg.webp"  // STRAY 圖標
+            },
+
+            // 3. 點擊壘包後，在新分頁跳轉的網頁網址
+            links: {
+                top:    "https://sites.google.com/view/straybaseball-team/%E9%A6%96%E9%A0%81?authuser=0", // 點擊 NEWS 跳轉到哪裡
+                right:  "https://www.facebook.com/groups/1057300540985213/posts/26518693757752541/",      // 點擊 STAT 跳轉到哪裡
+                bottom: "https://www.instagram.com/stray.official.baseball/", // 點擊 LIVE 跳轉到哪裡
+                left:   "https://www.youtube.com/@Stray%E6%A3%92%E7%90%83%E9%9A%8A"       // 點擊 STRAY 跳轉到哪裡
+            }
+        };
+
+        // ==========================================
+        // ⚙️ 系統核心邏輯 (請勿隨意更動)
+        // ==========================================
+        
+        // 初始化載入影片與圖片
+        document.getElementById('bgVideo').src = config.videoUrl;
+        document.getElementById('topIcon').src = config.icons.top;
+        document.getElementById('rightIcon').src = config.icons.right;
+        document.getElementById('bottomIcon').src = config.icons.bottom;
+        document.getElementById('leftIcon').src = config.icons.left;
+
+        // 處理點擊與動畫
+        function handleBaseClick(position) {
+            const eventTarget = document.querySelector(`.${position}-base`);
+            
+            // 清除其他選取狀態
+            document.querySelectorAll('.base-node').forEach(node => node.classList.remove('selected'));
+            
+            // 加上選取特效
+            eventTarget.classList.add('selected');
+            
+            // 延遲 0.5 秒後跳轉分頁
+            setTimeout(() => {
+                window.open(config.links[position], '_blank');
+                eventTarget.classList.remove('selected');
+            }, 500);
         }
     </script>
 </body>
