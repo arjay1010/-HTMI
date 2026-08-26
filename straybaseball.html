@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Stray Baseball</title>
+
+
+<style>
+
+
+*{
+
+margin:0;
+padding:0;
+box-sizing:border-box;
+
+}
+
+
+body{
+
+width:100vw;
+height:100vh;
+
+overflow:hidden;
+
+background:#000;
+
+}
+
+
+
+/* ==================================
+   背景影片
+   修改位置：第18行
+   ================================== */
+
+
+.video-bg{
+
+position:fixed;
+
+width:100%;
+height:100%;
+
+object-fit:cover;
+
+z-index:-3;
+
+}
+
+
+
+.overlay{
+
+position:fixed;
+
+width:100%;
+height:100%;
+
+
+background:
+
+rgba(0,0,0,0.55);
+
+
+z-index:-2;
+
+}
+
+
+
+/* ==================================
+   內野區
+   ================================== */
+
+
+.field{
+
+
+position:absolute;
+
+
+width:min(75vw,650px);
+
+
+aspect-ratio:1;
+
+
+left:50%;
+
+top:50%;
+
+
+transform:
+
+translate(-50%,-50%);
+
+
+}
+
+
+
+
+/* ==================================
+   金屬金色線條
+   ================================== */
+
+
+.line{
+
+
+position:absolute;
+
+
+background:
+
+linear-gradient(
+
+90deg,
+
+#765712,
+
+#B8931E,
+
+#fff0a0,
+
+#B8931E,
+
+#765712
+
+);
+
+
+
+box-shadow:
+
+0 0 12px rgba(184,147,30,.8);
+
+
+}
+
+
+
+/* 底線 */
+
+.baseline{
+
+
+width:100%;
+
+height:8px;
+
+bottom:0;
+
+
+}
+
+
+/* 左線 */
+
+.left-line{
+
+
+width:8px;
+
+height:100%;
+
+left:0;
+
+
+}
+
+
+
+/* 右線 */
+
+.right-line{
+
+
+width:8px;
+
+height:100%;
+
+right:0;
+
+
+}
+
+
+
+/* ==================================
+   壘包
+   ================================== */
+
+
+.base{
+
+
+position:absolute;
+
+
+width:15%;
+
+
+aspect-ratio:1;
+
+
+
+transform:
+
+translate(-50%,-50%)
+
+rotate(45deg);
+
+
+
+cursor:pointer;
+
+
+
+background:
+
+linear-gradient(
+
+135deg,
+
+rgba(255,255,255,.7),
+
+rgba(255,255,255,.2)
+
+);
+
+
+
+border:
+
+3px solid #B8931E;
+
+
+
+backdrop-filter:
+
+blur(8px);
+
+
+
+box-shadow:
+
+
+inset 0 0 25px rgba(255,255,255,.8),
+
+
+0 0 15px rgba(184,147,30,.7);
+
+
+
+transition:
+
+.8s ease;
+
+
+}
+
+
+
+/* ==================================
+   ICON圖片
+   ================================== */
+
+
+.base img{
+
+
+width:65%;
+
+height:65%;
+
+
+object-fit:contain;
+
+
+
+transform:
+
+rotate(-45deg);
+
+
+
+transition:.5s;
+
+
+}
+
+
+
+.base:hover{
+
+
+box-shadow:
+
+
+0 0 40px #B8931E,
+
+inset 0 0 30px white;
+
+
+}
+
+
+
+.base:hover img{
+
+
+transform:
+
+rotate(-45deg)
+
+scale(1.15);
+
+
+}
+
+
+
+
+/* 點擊動畫 */
+
+
+.base.active{
+
+
+background:
+
+
+linear-gradient(
+
+135deg,
+
+#B8931E,
+
+#fff1a8
+
+);
+
+
+
+box-shadow:
+
+
+0 0 100px #B8931E;
+
+
+
+transform:
+
+
+translate(-50%,-50%)
+
+rotate(45deg)
+
+scale(1.8);
+
+
+}
+
+
+
+
+
+/* 壘包位置 */
+
+
+.home{
+
+
+left:50%;
+
+bottom:0;
+
+
+}
+
+
+
+.first{
+
+
+right:0;
+
+top:50%;
+
+
+}
+
+
+
+.second{
+
+
+left:50%;
+
+top:0;
+
+
+}
+
+
+
+.third{
+
+
+left:0;
+
+top:50%;
+
+
+}
+
+
+
+
+
+/* 手機版 */
+
+
+@media(max-width:600px){
+
+
+.field{
+
+width:90vw;
+
+}
+
+
+
+.base{
+
+border-width:2px;
+
+}
+
+
+}
+
+
+
+</style>
+
+
+</head>
+
+
+
+
+<body>
+
+
+
+<!-- ==================================
+     背景影片
+     
+     修改這裡：
+     background.mp4 換成你的影片名稱
+     
+     ================================== -->
+
+
+<video autoplay muted loop class="video-bg">
+
+
+<source src="4月13日(投打對決).mp4" type="video/mp4">
+
+
+</video>
+
+
+
+
+<div class="overlay"></div>
+
+
+
+
+
+<div class="field">
+
+
+
+<!-- 球場線 -->
+
+
+<div class="line baseline"></div>
+
+<div class="line left-line"></div>
+
+<div class="line right-line"></div>
+
+
+
+
+
+
+<!-- ==================================
+     四個壘包 ICON
+
+     修改圖片位置：
+     home.png
+     first.png
+     second.png
+     third.png
+
+     ================================== -->
+
+
+<div class="base home">
+
+<img src="https://i.ibb.co/rCptGSd/STRAYICON.png">
+
+</div>
+
+
+
+<div class="base first">
+
+<img src="https://i.ibb.co/W4K1DWsJ/500px-2023-Facebook-icon-svg.webp">
+
+</div>
+
+
+
+<div class="base second">
+
+<img src="https://i.ibb.co/0j5RpbFs/500px-Instagram-icon.webp">
+
+</div>
+
+
+
+<div class="base third">
+
+<img src="https://i.ibb.co/LXN2tf5N/960px-You-Tube-full-color-icon-2017-svg.webp">
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<script>
+
+
+
+
+/* ==================================
+   跳轉網址設定
+
+   修改以下4個網址
+
+   ================================== */
+
+
+const links={
+
+
+home:
+
+"https://sites.google.com/view/straybaseball-team/%E9%A6%96%E9%A0%81?authuser=0",
+
+
+
+first:
+
+"https://www.facebook.com/groups/1057300540985213/posts/26518693757752541/",
+
+
+
+second:
+
+"https://www.instagram.com/stray.official.baseball/",
+
+
+
+third:
+
+"https://www.youtube.com/@Stray%E6%A3%92%E7%90%83%E9%9A%8A/videos"
+
+
+
+};
+
+
+
+
+
+
+document.querySelectorAll(".base")
+
+.forEach(base=>{
+
+
+base.onclick=function(){
+
+
+
+this.classList.add("active");
+
+
+
+let target;
+
+
+
+if(this.classList.contains("home"))
+
+target=links.home;
+
+
+
+if(this.classList.contains("first"))
+
+target=links.first;
+
+
+
+if(this.classList.contains("second"))
+
+target=links.second;
+
+
+
+if(this.classList.contains("third"))
+
+target=links.third;
+
+
+
+
+
+setTimeout(()=>{
+
+
+window.location.href=target;
+
+
+},800);
+
+
+
+
+}
+
+
+
+});
+
+
+
+</script>
+
+
+
+</body>
+
+
+</html>
