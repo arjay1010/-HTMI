@@ -161,6 +161,7 @@
             background-color: rgba(20, 20, 20, 0.5);
             box-shadow: inset 0 0 10px rgba(184, 151, 66, 0.3);
             pointer-events: none;
+            border-radius: 50%; /* 👈 加上這行，立刻變成圓形 */
         }
 
         @keyframes pulse {
@@ -231,7 +232,7 @@
         
         const config = {
             // 1. 全螢幕背景影片網址 (必須是直連 .mp4 檔案的網址)
-            videoUrl: "https://mixkit.co",
+            videoUrl: "test.mp4",
 
             // 2. 四個壘包的圖片 Icon 網址 (填入圖片連結，建議用去背的 PNG 檔)
             icons: {
