@@ -12,13 +12,10 @@
 
 <style>
 
-
 *{
-
 margin:0;
 padding:0;
 box-sizing:border-box;
-
 }
 
 
@@ -34,11 +31,9 @@ background:#000;
 }
 
 
-
-/* ==================================
-   背景影片
-   修改位置：第18行
-   ================================== */
+/* =========================
+背景影片
+========================= */
 
 
 .video-bg{
@@ -75,9 +70,10 @@ z-index:-2;
 
 
 
-/* ==================================
-   內野區
-   ================================== */
+
+/* =========================
+棒球內野區
+========================= */
 
 
 .field{
@@ -86,7 +82,7 @@ z-index:-2;
 position:absolute;
 
 
-width:min(75vw,650px);
+width:min(65vw,520px);
 
 
 aspect-ratio:1;
@@ -94,7 +90,9 @@ aspect-ratio:1;
 
 left:50%;
 
+
 top:50%;
+
 
 
 transform:
@@ -107,9 +105,10 @@ translate(-50%,-50%);
 
 
 
-/* ==================================
-   金屬金色線條
-   ================================== */
+
+/* =========================
+金色內野線
+========================= */
 
 
 .line{
@@ -118,85 +117,97 @@ translate(-50%,-50%);
 position:absolute;
 
 
-background:
-
-linear-gradient(
-
-90deg,
-
-#765712,
-
-#B8931E,
-
-#fff0a0,
-
-#B8931E,
-
-#765712
-
-);
-
-
-
-box-shadow:
-
-0 0 12px rgba(184,147,30,.8);
+background:#B8931E;
 
 
 }
 
 
 
-/* 底線 */
+/* 左斜線 */
 
-.baseline{
-
-
-width:100%;
-
-height:8px;
-
-bottom:0;
-
-
-}
-
-
-/* 左線 */
 
 .left-line{
 
 
-width:8px;
+width:3px;
 
-height:100%;
 
-left:0;
+height:70%;
+
+
+left:15%;
+
+
+top:15%;
+
+
+
+transform:
+
+rotate(45deg);
 
 
 }
 
 
 
-/* 右線 */
+/* 右斜線 */
+
 
 .right-line{
 
 
-width:8px;
+width:3px;
 
-height:100%;
 
-right:0;
+height:70%;
+
+
+right:15%;
+
+
+top:15%;
+
+
+
+transform:
+
+rotate(-45deg);
 
 
 }
 
 
 
-/* ==================================
-   壘包
-   ================================== */
+/* 上方線 */
+
+
+.baseline{
+
+
+width:70%;
+
+
+height:3px;
+
+
+top:15%;
+
+
+left:15%;
+
+
+}
+
+
+
+
+
+
+/* =========================
+壘包
+========================= */
 
 
 .base{
@@ -205,81 +216,62 @@ right:0;
 position:absolute;
 
 
-width:15%;
+width:9%;
 
 
 aspect-ratio:1;
 
 
 
-transform:
-
-translate(-50%,-50%)
-
-rotate(45deg);
-
+background:#B8931E;
 
 
 cursor:pointer;
 
 
 
-background:
+display:flex;
 
-linear-gradient(
 
-135deg,
+align-items:center;
 
-rgba(255,255,255,.7),
 
-rgba(255,255,255,.2)
-
-);
+justify-content:center;
 
 
 
-border:
 
-3px solid #B8931E;
-
+transform:
 
 
-backdrop-filter:
-
-blur(8px);
+translate(-50%,-50%)
 
 
-
-box-shadow:
-
-
-inset 0 0 25px rgba(255,255,255,.8),
-
-
-0 0 15px rgba(184,147,30,.7);
+rotate(45deg);
 
 
 
-transition:
 
-.8s ease;
+transition:.6s ease;
 
 
 }
 
 
 
-/* ==================================
-   ICON圖片
-   ================================== */
+
+
+
+/* ICON */
 
 
 .base img{
 
 
-width:65%;
+width:60%;
 
-height:65%;
+
+height:60%;
 
 
 object-fit:contain;
@@ -287,6 +279,7 @@ object-fit:contain;
 
 
 transform:
+
 
 rotate(-45deg);
 
@@ -299,29 +292,18 @@ transition:.5s;
 
 
 
+
+
+/* 滑過 */
+
+
 .base:hover{
 
 
 box-shadow:
 
 
-0 0 40px #B8931E,
-
-inset 0 0 30px white;
-
-
-}
-
-
-
-.base:hover img{
-
-
-transform:
-
-rotate(-45deg)
-
-scale(1.15);
+0 0 20px #B8931E;
 
 
 }
@@ -329,31 +311,14 @@ scale(1.15);
 
 
 
-/* 點擊動畫 */
+
+/* 點擊 */
 
 
 .base.active{
 
 
-background:
-
-
-linear-gradient(
-
-135deg,
-
-#B8931E,
-
-#fff1a8
-
-);
-
-
-
-box-shadow:
-
-
-0 0 100px #B8931E;
+background:#B8931E;
 
 
 
@@ -362,9 +327,12 @@ transform:
 
 translate(-50%,-50%)
 
+
 rotate(45deg)
 
-scale(1.8);
+
+scale(1.25);
+
 
 
 }
@@ -373,7 +341,11 @@ scale(1.8);
 
 
 
-/* 壘包位置 */
+
+/* =========================
+四個壘包位置
+========================= */
+
 
 
 .home{
@@ -381,7 +353,8 @@ scale(1.8);
 
 left:50%;
 
-bottom:0;
+
+bottom:8%;
 
 
 }
@@ -391,7 +364,8 @@ bottom:0;
 .first{
 
 
-right:0;
+right:8%;
+
 
 top:50%;
 
@@ -405,7 +379,8 @@ top:50%;
 
 left:50%;
 
-top:0;
+
+top:8%;
 
 
 }
@@ -415,12 +390,15 @@ top:0;
 .third{
 
 
-left:0;
+left:8%;
+
 
 top:50%;
 
 
 }
+
+
 
 
 
@@ -434,7 +412,9 @@ top:50%;
 
 .field{
 
-width:90vw;
+
+width:85vw;
+
 
 }
 
@@ -442,12 +422,16 @@ width:90vw;
 
 .base{
 
-border-width:2px;
+
+width:11%;
+
 
 }
 
 
+
 }
+
 
 
 
@@ -458,19 +442,11 @@ border-width:2px;
 
 
 
-
 <body>
 
 
 
-<!-- ==================================
-     背景影片
-     
-     修改這裡：
-     background.mp4 換成你的影片名稱
-     
-     ================================== -->
-
+<!-- 背景影片 -->
 
 <video autoplay muted loop class="video-bg">
 
@@ -479,7 +455,6 @@ border-width:2px;
 
 
 </video>
-
 
 
 
@@ -493,12 +468,14 @@ border-width:2px;
 
 
 
-<!-- 球場線 -->
+<!-- 內野線 -->
 
 
 <div class="line baseline"></div>
 
+
 <div class="line left-line"></div>
+
 
 <div class="line right-line"></div>
 
@@ -507,51 +484,58 @@ border-width:2px;
 
 
 
-<!-- ==================================
-     四個壘包 ICON
-
-     修改圖片位置：
-     home.png
-     first.png
-     second.png
-     third.png
-
-     ================================== -->
+<!-- 壘包 ICON -->
 
 
 <div class="base home">
 
+
 <img src="https://i.ibb.co/rCptGSd/STRAYICON.png">
 
+
 </div>
+
 
 
 
 <div class="base first">
 
+
 <img src="https://i.ibb.co/W4K1DWsJ/500px-2023-Facebook-icon-svg.webp">
 
+
 </div>
+
+
 
 
 
 <div class="base second">
 
+
 <img src="https://i.ibb.co/0j5RpbFs/500px-Instagram-icon.webp">
 
+
 </div>
+
+
 
 
 
 <div class="base third">
 
+
 <img src="https://i.ibb.co/LXN2tf5N/960px-You-Tube-full-color-icon-2017-svg.webp">
 
+
+</div>
+
+
+
 </div>
 
 
 
-</div>
 
 
 
@@ -561,16 +545,8 @@ border-width:2px;
 
 
 
-
-/* ==================================
-   跳轉網址設定
-
-   修改以下4個網址
-
-   ================================== */
-
-
 const links={
+
 
 
 home:
@@ -646,14 +622,13 @@ target=links.third;
 
 
 
-
 setTimeout(()=>{
 
 
 window.location.href=target;
 
 
-},800);
+},600);
 
 
 
@@ -663,6 +638,7 @@ window.location.href=target;
 
 
 });
+
 
 
 
