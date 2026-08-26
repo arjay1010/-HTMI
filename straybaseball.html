@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Baseball Menu</title>
+<title>Baseball Navigation</title>
 
 <style>
 
@@ -15,22 +14,19 @@
     box-sizing:border-box;
 }
 
-
 html,body{
-
     width:100%;
     height:100%;
     overflow:hidden;
-
+    font-family:"Microsoft JhengHei",sans-serif;
 }
 
 
-/* 背景影片 */
+/* ===== 背景影片 ===== */
 
-.bg-video{
+.video-bg{
 
     position:fixed;
-
     width:100%;
     height:100%;
 
@@ -41,14 +37,15 @@ html,body{
 }
 
 
-.dark{
+/* 黑色遮罩 */
+
+.overlay{
 
     position:fixed;
-
     width:100%;
     height:100%;
 
-    background:rgba(0,0,0,.25);
+    background:rgba(0,0,0,0.25);
 
     z-index:-1;
 
@@ -56,70 +53,109 @@ html,body{
 
 
 
-/* 主容器 */
+/* ===== 棒球場導航區 ===== */
 
-.field{
+
+.baseball-field{
 
     position:absolute;
-
-    width:520px;
-
-    height:520px;
 
     top:50%;
     left:50%;
 
     transform:translate(-50%,-50%);
 
-}
+    width:420px;
+    height:420px;
 
+}
 
 
 
 /* 菱形線 */
 
-.diamond{
+.line{
 
     position:absolute;
 
-    width:100%;
+    height:3px;
 
-    height:100%;
+    background:white;
 
-}
+    transform-origin:left center;
 
-
-
-.diamond polygon{
-
-    fill:none;
-
-    stroke:white;
-
-    stroke-width:1.5;
+    opacity:0.85;
 
 }
 
 
 
+/* 四條壘線 */
 
-/* 壘包 */
+
+.line1{
+
+    width:180px;
+
+    left:210px;
+    top:210px;
+
+    transform:rotate(-45deg);
+
+}
+
+
+.line2{
+
+    width:180px;
+
+    left:210px;
+    top:210px;
+
+    transform:rotate(45deg);
+
+}
+
+
+.line3{
+
+    width:180px;
+
+    left:80px;
+    top:80px;
+
+    transform:rotate(45deg);
+
+}
+
+
+.line4{
+
+    width:180px;
+
+    left:80px;
+    top:340px;
+
+    transform:rotate(-45deg);
+
+}
+
+
+
+/* ===== 壘包 ===== */
+
 
 .base{
 
     position:absolute;
 
-    width:90px;
+    width:70px;
 
-    height:90px;
-
-    transform:translate(-50%,-50%);
+    height:70px;
 
     cursor:pointer;
 
     transition:.25s;
-
-    z-index:5;
 
 }
 
@@ -127,6 +163,7 @@ html,body{
 .base img{
 
     width:100%;
+
     height:100%;
 
     object-fit:contain;
@@ -134,21 +171,23 @@ html,body{
 }
 
 
+
 .base:hover{
 
-    scale:1.15;
+    transform:scale(1.15);
 
 }
 
 
 
-/* 四個角精準對齊 */
+/* 位置 */
 
-.second{
 
-    left:50%;
+.home{
 
-    top:10%;
+    left:175px;
+
+    bottom:0;
 
 }
 
@@ -156,19 +195,19 @@ html,body{
 
 .first{
 
-    left:90%;
+    right:0;
 
-    top:50%;
+    top:175px;
 
 }
 
 
 
-.home{
+.second{
 
-    left:50%;
+    left:175px;
 
-    top:90%;
+    top:0;
 
 }
 
@@ -176,13 +215,11 @@ html,body{
 
 .third{
 
-    left:10%;
+    left:0;
 
-    top:50%;
+    top:175px;
 
 }
-
-
 
 
 
@@ -191,27 +228,97 @@ html,body{
 @media(max-width:600px){
 
 
-.field{
+.baseball-field{
 
-    width:360px;
+    width:300px;
 
-    height:360px;
+    height:300px;
 
 }
-
 
 
 .base{
 
-    width:70px;
+    width:55px;
 
-    height:70px;
+    height:55px;
+
+}
+
+
+.home{
+
+    left:122px;
+
+}
+
+
+.second{
+
+    left:122px;
+
+}
+
+
+.first{
+
+    top:122px;
+
+}
+
+
+.third{
+
+    top:122px;
+
+}
+
+
+.line1,
+.line2,
+.line3,
+.line4{
+
+    width:130px;
+
+}
+
+
+.line1{
+
+    left:150px;
+    top:150px;
+
+}
+
+
+.line2{
+
+    left:150px;
+    top:150px;
+
+}
+
+
+.line3{
+
+    left:55px;
+    top:55px;
+
+}
+
+
+.line4{
+
+    left:55px;
+    top:245px;
 
 }
 
 
 
 }
+
 
 
 </style>
@@ -225,77 +332,74 @@ html,body{
 
 <!-- 背景影片 -->
 
-<video class="bg-video" autoplay muted loop playsinline>
+<video class="video-bg" autoplay muted loop playsinline>
 
-<source src="你的影片網址.mp4" type="video/mp4">
+    <source src="你的影片網址.mp4" type="video/mp4">
 
 </video>
 
 
-<div class="dark"></div>
+<div class="overlay"></div>
 
 
 
-<div class="field">
+<!-- 棒球導航 -->
 
 
-<!-- 完整菱形 -->
-
-<svg class="diamond" viewBox="0 0 100 100">
-
-<polygon points="
-50,10
-90,50
-50,90
-10,50
-"/>
-
-</svg>
+<div class="baseball-field">
 
 
+    <!-- 菱形線 -->
 
-<!-- 二壘 -->
+    <div class="line line1"></div>
 
-<a href="你的二壘網址" class="base second">
+    <div class="line line2"></div>
 
-<img src="你的二壘圖片">
+    <div class="line line3"></div>
 
-</a>
+    <div class="line line4"></div>
 
 
 
-<!-- 一壘 -->
-
-<a href="你的一壘網址" class="base first">
-
-<img src="你的一壘圖片">
-
-</a>
+    <!-- 壘包 -->
 
 
+    <a href="你的首頁網址" class="base home">
 
-<!-- 本壘 -->
+        <img src="本壘圖片網址">
 
-<a href="你的本壘網址" class="base home">
-
-<img src="你的本壘圖片">
-
-</a>
+    </a>
 
 
 
-<!-- 三壘 -->
+    <a href="你的第一頁網址" class="base first">
 
-<a href="你的三壘網址" class="base third">
+        <img src="一壘圖片網址">
 
-<img src="你的三壘圖片">
+    </a>
 
-</a>
+
+
+    <a href="你的第二頁網址" class="base second">
+
+        <img src="二壘圖片網址">
+
+    </a>
+
+
+
+    <a href="你的第三頁網址" class="base third">
+
+        <img src="三壘圖片網址">
+
+    </a>
 
 
 
 </div>
 
 
+
 </body>
+
 </html>
