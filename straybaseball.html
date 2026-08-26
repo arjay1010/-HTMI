@@ -5,8 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Baseball Navigation</title>
-
+<title>Baseball Menu</title>
 
 <style>
 
@@ -23,16 +22,12 @@ html,body{
     height:100%;
     overflow:hidden;
 
-    font-family:"Microsoft JhengHei",sans-serif;
-
 }
 
 
+/* 背景影片 */
 
-/* ===== 背景影片 ===== */
-
-
-.video-bg{
+.bg-video{
 
     position:fixed;
 
@@ -46,15 +41,14 @@ html,body{
 }
 
 
-
-.overlay{
+.dark{
 
     position:fixed;
 
     width:100%;
     height:100%;
 
-    background:rgba(0,0,0,0.25);
+    background:rgba(0,0,0,.25);
 
     z-index:-1;
 
@@ -62,11 +56,9 @@ html,body{
 
 
 
+/* 主容器 */
 
-/* ===== 棒球菱形區 ===== */
-
-
-.baseball-field{
+.field{
 
     position:absolute;
 
@@ -84,62 +76,57 @@ html,body{
 
 
 
-/* ===== SVG 菱形線 ===== */
+/* 菱形線 */
 
-
-.field-line{
+.diamond{
 
     position:absolute;
 
     width:100%;
+
     height:100%;
 
 }
 
 
 
-.field-line polygon{
+.diamond polygon{
 
     fill:none;
 
     stroke:white;
 
-    stroke-width:2;
-
-    opacity:0.85;
+    stroke-width:1.5;
 
 }
 
 
 
 
-
-
-/* ===== 壘包 ===== */
-
+/* 壘包 */
 
 .base{
 
     position:absolute;
 
-    width:105px;
+    width:90px;
 
-    height:105px;
+    height:90px;
+
+    transform:translate(-50%,-50%);
 
     cursor:pointer;
 
     transition:.25s;
 
-    z-index:2;
+    z-index:5;
 
 }
-
 
 
 .base img{
 
     width:100%;
-
     height:100%;
 
     object-fit:contain;
@@ -147,61 +134,51 @@ html,body{
 }
 
 
-
 .base:hover{
 
-    transform:scale(1.15);
+    scale:1.15;
 
 }
 
 
 
-/* ===== 四個位置 ===== */
-
-
-/* 本壘 */
-
-.home{
-
-    left:207px;
-
-    bottom:-5px;
-
-}
-
-
-
-/* 二壘 */
+/* 四個角精準對齊 */
 
 .second{
 
-    left:207px;
+    left:50%;
 
-    top:-5px;
+    top:10%;
 
 }
 
 
-
-/* 一壘 */
 
 .first{
 
-    right:-5px;
+    left:90%;
 
-    top:207px;
+    top:50%;
 
 }
 
 
 
-/* 三壘 */
+.home{
+
+    left:50%;
+
+    top:90%;
+
+}
+
+
 
 .third{
 
-    left:-5px;
+    left:10%;
 
-    top:207px;
+    top:50%;
 
 }
 
@@ -209,13 +186,12 @@ html,body{
 
 
 
-/* ===== 手機版 ===== */
-
+/* 手機 */
 
 @media(max-width:600px){
 
 
-.baseball-field{
+.field{
 
     width:360px;
 
@@ -227,33 +203,16 @@ html,body{
 
 .base{
 
-    width:75px;
+    width:70px;
 
-    height:75px;
-
-}
-
-
-
-.home,
-.second{
-
-    left:142px;
-
-}
-
-
-
-.first,
-.third{
-
-    top:142px;
+    height:70px;
 
 }
 
 
 
 }
+
 
 </style>
 
@@ -266,74 +225,70 @@ html,body{
 
 <!-- 背景影片 -->
 
-<video class="video-bg" autoplay muted loop playsinline>
+<video class="bg-video" autoplay muted loop playsinline>
 
 <source src="你的影片網址.mp4" type="video/mp4">
 
 </video>
 
 
-
-<div class="overlay"></div>
-
+<div class="dark"></div>
 
 
 
-
-<div class="baseball-field">
-
+<div class="field">
 
 
-<!-- 完整菱形線 -->
+<!-- 完整菱形 -->
 
-<svg class="field-line" viewBox="0 0 520 520">
+<svg class="diamond" viewBox="0 0 100 100">
 
-<polygon points="260,20 500,260 260,500 20,260"/>
+<polygon points="
+50,10
+90,50
+50,90
+10,50
+"/>
 
 </svg>
 
 
 
+<!-- 二壘 -->
 
+<a href="你的二壘網址" class="base second">
 
-<!-- 本壘 -->
-
-<a href="你的首頁網址" class="base home">
-
-<img src="本壘圖片網址">
+<img src="你的二壘圖片">
 
 </a>
-
 
 
 
 <!-- 一壘 -->
 
-<a href="你的第一頁網址" class="base first">
+<a href="你的一壘網址" class="base first">
 
-<img src="一壘圖片網址">
-
-</a>
-
-
-
-
-<!-- 二壘 -->
-
-<a href="你的第二頁網址" class="base second">
-
-<img src="二壘圖片網址">
+<img src="你的一壘圖片">
 
 </a>
 
+
+
+<!-- 本壘 -->
+
+<a href="你的本壘網址" class="base home">
+
+<img src="你的本壘圖片">
+
+</a>
 
 
 
 <!-- 三壘 -->
 
-<a href="你的第三頁網址" class="base third">
+<a href="你的三壘網址" class="base third">
 
-<img src="三壘圖片網址">
+<img src="你的三壘圖片">
 
 </a>
 
@@ -342,7 +297,5 @@ html,body{
 </div>
 
 
-
 </body>
-
 </html>
