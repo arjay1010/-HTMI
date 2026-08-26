@@ -1,361 +1,193 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Stray Baseball</title>
-
+<title>Baseball Navigation</title>
 
 <style>
 
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:"Microsoft JhengHei",sans-serif;
 }
 
 
-body{
-
-width:100vw;
-height:100vh;
-
-overflow:hidden;
-
-background:#000;
-
-}
-
-
-/* =========================
-背景影片
-========================= */
-
+/* ===== 背景影片 ===== */
 
 .video-bg{
 
-position:fixed;
+    position:fixed;
+    width:100%;
+    height:100%;
 
-width:100%;
-height:100%;
+    object-fit:cover;
 
-object-fit:cover;
-
-z-index:-3;
+    z-index:-2;
 
 }
 
 
+/* 黑色遮罩 */
 
 .overlay{
 
-position:fixed;
+    position:fixed;
+    width:100%;
+    height:100%;
 
-width:100%;
-height:100%;
+    background:rgba(0,0,0,0.25);
 
-
-background:
-
-rgba(0,0,0,0.55);
-
-
-z-index:-2;
+    z-index:-1;
 
 }
 
 
 
-
-/* =========================
-棒球內野區
-========================= */
+/* ===== 棒球場導航區 ===== */
 
 
-.field{
+.baseball-field{
 
+    position:absolute;
 
-position:absolute;
+    top:50%;
+    left:50%;
 
+    transform:translate(-50%,-50%);
 
-width:min(65vw,520px);
-
-
-aspect-ratio:1;
-
-
-left:50%;
-
-
-top:50%;
-
-
-
-transform:
-
-translate(-50%,-50%);
-
+    width:420px;
+    height:420px;
 
 }
 
 
 
-
-
-/* =========================
-金色內野線
-========================= */
-
+/* 菱形線 */
 
 .line{
 
+    position:absolute;
 
-position:absolute;
+    height:3px;
 
+    background:white;
 
-background:#B8931E;
+    transform-origin:left center;
 
-
-}
-
-
-
-/* 左斜線 */
-
-
-.left-line{
-
-
-width:3px;
-
-
-height:70%;
-
-
-left:15%;
-
-
-top:15%;
-
-
-
-transform:
-
-rotate(45deg);
-
+    opacity:0.85;
 
 }
 
 
 
-/* 右斜線 */
+/* 四條壘線 */
 
 
-.right-line{
+.line1{
+
+    width:180px;
+
+    left:210px;
+    top:210px;
+
+    transform:rotate(-45deg);
+
+}
 
 
-width:3px;
+.line2{
+
+    width:180px;
+
+    left:210px;
+    top:210px;
+
+    transform:rotate(45deg);
+
+}
 
 
-height:70%;
+.line3{
+
+    width:180px;
+
+    left:80px;
+    top:80px;
+
+    transform:rotate(45deg);
+
+}
 
 
-right:15%;
+.line4{
 
+    width:180px;
 
-top:15%;
+    left:80px;
+    top:340px;
 
-
-
-transform:
-
-rotate(-45deg);
-
+    transform:rotate(-45deg);
 
 }
 
 
 
-/* 上方線 */
-
-
-.baseline{
-
-
-width:70%;
-
-
-height:3px;
-
-
-top:15%;
-
-
-left:15%;
-
-
-}
-
-
-
-
-
-
-/* =========================
-壘包
-========================= */
+/* ===== 壘包 ===== */
 
 
 .base{
 
+    position:absolute;
 
-position:absolute;
+    width:70px;
 
+    height:70px;
 
-width:9%;
+    cursor:pointer;
 
-
-aspect-ratio:1;
-
-
-
-background:#B8931E;
-
-
-cursor:pointer;
-
-
-
-display:flex;
-
-
-align-items:center;
-
-
-justify-content:center;
-
-
-
-
-transform:
-
-
-translate(-50%,-50%)
-
-
-rotate(45deg);
-
-
-
-
-transition:.6s ease;
-
+    transition:.25s;
 
 }
-
-
-
-
-
-
-/* ICON */
 
 
 .base img{
 
+    width:100%;
 
-width:60%;
+    height:100%;
 
-
-height:60%;
-
-
-object-fit:contain;
-
-
-
-transform:
-
-
-rotate(-45deg);
-
-
-
-transition:.5s;
-
+    object-fit:contain;
 
 }
 
-
-
-
-
-/* 滑過 */
 
 
 .base:hover{
 
-
-box-shadow:
-
-
-0 0 20px #B8931E;
-
+    transform:scale(1.15);
 
 }
 
 
 
-
-
-/* 點擊 */
-
-
-.base.active{
-
-
-background:#B8931E;
-
-
-
-transform:
-
-
-translate(-50%,-50%)
-
-
-rotate(45deg)
-
-
-scale(1.25);
-
-
-
-}
-
-
-
-
-
-
-/* =========================
-四個壘包位置
-========================= */
-
+/* 位置 */
 
 
 .home{
 
+    left:175px;
 
-left:50%;
-
-
-bottom:8%;
-
+    bottom:0;
 
 }
 
@@ -363,12 +195,9 @@ bottom:8%;
 
 .first{
 
+    right:0;
 
-right:8%;
-
-
-top:50%;
-
+    top:175px;
 
 }
 
@@ -376,12 +205,9 @@ top:50%;
 
 .second{
 
+    left:175px;
 
-left:50%;
-
-
-top:8%;
-
+    top:0;
 
 }
 
@@ -389,57 +215,115 @@ top:8%;
 
 .third{
 
+    left:0;
 
-left:8%;
-
-
-top:50%;
-
+    top:175px;
 
 }
 
 
 
-
-
-
-
-/* 手機版 */
-
+/* 手機 */
 
 @media(max-width:600px){
 
 
-.field{
+.baseball-field{
 
+    width:300px;
 
-width:85vw;
-
+    height:300px;
 
 }
-
 
 
 .base{
 
+    width:55px;
 
-width:11%;
+    height:55px;
 
+}
+
+
+.home{
+
+    left:122px;
+
+}
+
+
+.second{
+
+    left:122px;
+
+}
+
+
+.first{
+
+    top:122px;
+
+}
+
+
+.third{
+
+    top:122px;
+
+}
+
+
+.line1,
+.line2,
+.line3,
+.line4{
+
+    width:130px;
+
+}
+
+
+.line1{
+
+    left:150px;
+    top:150px;
+
+}
+
+
+.line2{
+
+    left:150px;
+    top:150px;
+
+}
+
+
+.line3{
+
+    left:55px;
+    top:55px;
+
+}
+
+
+.line4{
+
+    left:55px;
+    top:245px;
 
 }
 
 
 
 }
-
 
 
 
 </style>
 
-
 </head>
-
 
 
 <body>
@@ -448,205 +332,74 @@ width:11%;
 
 <!-- 背景影片 -->
 
-<video autoplay muted loop class="video-bg">
+<video class="video-bg" autoplay muted loop playsinline>
 
-
-<source src="4月13日(投打對決).mp4" type="video/mp4">
-
+    <source src="你的影片網址.mp4" type="video/mp4">
 
 </video>
-
 
 
 <div class="overlay"></div>
 
 
 
+<!-- 棒球導航 -->
 
 
-<div class="field">
+<div class="baseball-field">
 
 
+    <!-- 菱形線 -->
 
-<!-- 內野線 -->
+    <div class="line line1"></div>
 
+    <div class="line line2"></div>
 
-<div class="line baseline"></div>
+    <div class="line line3"></div>
 
-
-<div class="line left-line"></div>
-
-
-<div class="line right-line"></div>
-
-
+    <div class="line line4"></div>
 
 
 
-
-<!-- 壘包 ICON -->
-
-
-<div class="base home">
+    <!-- 壘包 -->
 
 
-<img src="https://i.ibb.co/rCptGSd/STRAYICON.png">
+    <a href="你的首頁網址" class="base home">
 
+        <img src="本壘圖片網址">
 
-</div>
+    </a>
 
 
 
+    <a href="你的第一頁網址" class="base first">
 
-<div class="base first">
+        <img src="一壘圖片網址">
 
-
-<img src="https://i.ibb.co/W4K1DWsJ/500px-2023-Facebook-icon-svg.webp">
-
-
-</div>
+    </a>
 
 
 
+    <a href="你的第二頁網址" class="base second">
 
+        <img src="二壘圖片網址">
 
-<div class="base second">
-
-
-<img src="https://i.ibb.co/0j5RpbFs/500px-Instagram-icon.webp">
-
-
-</div>
+    </a>
 
 
 
+    <a href="你的第三頁網址" class="base third">
 
+        <img src="三壘圖片網址">
 
-<div class="base third">
-
-
-<img src="https://i.ibb.co/LXN2tf5N/960px-You-Tube-full-color-icon-2017-svg.webp">
-
-
-</div>
+    </a>
 
 
 
 </div>
-
-
-
-
-
-
-
-
-<script>
-
-
-
-const links={
-
-
-
-home:
-
-"https://sites.google.com/view/straybaseball-team/%E9%A6%96%E9%A0%81?authuser=0",
-
-
-
-first:
-
-"https://www.facebook.com/groups/1057300540985213/posts/26518693757752541/",
-
-
-
-second:
-
-"https://www.instagram.com/stray.official.baseball/",
-
-
-
-third:
-
-"https://www.youtube.com/@Stray%E6%A3%92%E7%90%83%E9%9A%8A/videos"
-
-
-
-};
-
-
-
-
-
-
-document.querySelectorAll(".base")
-
-.forEach(base=>{
-
-
-base.onclick=function(){
-
-
-
-this.classList.add("active");
-
-
-
-let target;
-
-
-
-if(this.classList.contains("home"))
-
-target=links.home;
-
-
-
-if(this.classList.contains("first"))
-
-target=links.first;
-
-
-
-if(this.classList.contains("second"))
-
-target=links.second;
-
-
-
-if(this.classList.contains("third"))
-
-target=links.third;
-
-
-
-
-setTimeout(()=>{
-
-
-window.location.href=target;
-
-
-},600);
-
-
-
-
-}
-
-
-
-});
-
-
-
-
-</script>
 
 
 
 </body>
-
 
 </html>
