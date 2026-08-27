@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STRAY 棒球互動儀表板</title>
+    <!-- 需求 1：網頁名稱改為 STRAYBaseball -->
+    <title>STRAYBaseball</title>
+    
+    <!-- 需求 1：在這裡放上您的網址作為網頁標籤的小圖標 (Favicon) -->
+    <link rel="icon" type="image/png" href="https://i.ibb.co/rCptGSd/STRAYICON.png">
+
     <style>
         * {
             box-sizing: border-box;
@@ -19,37 +24,14 @@
             background-color: #000;
         }
 
-        /* 🎬 核心修改：全螢幕 YouTube 背景劇場模式（滿版、置底且不干擾滑鼠點擊） */
-        .video-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -2; /* 放在最底層 */
-            overflow: hidden;
-            pointer-events: none; /* 滑鼠直接穿透影片，不干擾點擊前方的壘包 */
-        }
-
-        .video-background iframe {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100vw;
-            height: 56.25vw; /* 16:9 比例 */
-            min-height: 100vh;
-            min-width: 177.77vh;
-            transform: translate(-50%, -50%); /* 完美居中裁切，防止出現黑邊 */
-        }
-
-        /* 黑色半透明遮罩層（讓影片變暗，突顯前方的金色選單） */
+        /* 黑色半透明遮罩層 */
         .overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6); /* 0.6 代表 60% 黑色遮罩 */
+            background: rgba(0, 0, 0, 0.7);
             z-index: -1;
         }
 
@@ -185,22 +167,10 @@
 </head>
 <body>
 
-    <!-- 📺 核心修改：這段嵌入了您的專屬影片，並加上了全螢幕背景播放所需的所有進階網址參數 -->
-    <div class="video-background">
-        <iframe 
-            src="https://youtube.com" 
-            title="YouTube video player" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            referrerpolicy="strict-origin-when-cross-origin" 
-            allowfullscreen>
-        </iframe>
-    </div>
-
     <!-- 半透明深色遮罩層 -->
     <div class="overlay"></div>
 
-    <!-- 主要內容區（覆蓋在全螢幕影片前方的壘包選單） -->
+    <!-- 主要內容區 -->
     <div class="container">
         <div class="large-diamond-orbit">
             
@@ -247,7 +217,7 @@
         // 🔥【超直覺全面自訂設定區】請在這裡修改您的所有字體與網址
         // ==========================================================
         const config = {
-            // 1. 修改四個壘包下方的文字
+            // 四個壘包下方的文字
             labels: {
                 top:    "首頁",  
                 right:  "FB",  
@@ -255,20 +225,20 @@
                 left:   "YT" 
             },
 
-            // 2. 四個壘包的圖片 Icon 網址
+             // 3. 四個壘包的圖片 Icon 網址 (填入圖片連結，建議用去背的 PNG 檔)
             icons: {
-                top:    "https://ibb.co", 
-                right:  "https://ibb.co",   
-                bottom: "https://ibb.co", 
-                left:   "https://ibb.co"  
+                top:    "https://i.ibb.co/rCptGSd/STRAYICON.png", // NEWS 圖標
+                right:  "https://i.ibb.co/W4K1DWsJ/500px-2023-Facebook-icon-svg.webp",   // STAT 圖標
+                bottom: "https://i.ibb.co/0j5RpbFs/500px-Instagram-icon.webp", // LIVE 圖標
+                left:   "https://i.ibb.co/LXN2tf5N/960px-You-Tube-full-color-icon-2017-svg.webp"  // STRAY 圖標
             },
 
-            // 3. 點擊壘包後跳轉的目標網址
+            // 4. 點擊壘包後，在新分頁跳轉的網頁網址
             links: {
-                top:    "https://google.com", 
-                right:  "https://facebook.com",   
-                bottom: "https://instagram.com",  
-                left:   "https://www.youtube.com"     
+                top:    "https://sites.google.com/view/straybaseball-team/%E9%A6%96%E9%A0%81?authuser=0", // 點擊 NEWS 跳轉到哪裡
+                right:  "https://www.facebook.com/groups/1057300540985213/posts/26518693757752541/",      // 點擊 STAT 跳轉到哪裡
+                bottom: "https://www.instagram.com/stray.official.baseball/", // 點擊 LIVE 跳轉到哪裡
+                left:   "https://www.youtube.com/@Stray%E6%A3%92%E7%90%83%E9%9A%8A"       // 點擊 STRAY 跳轉到哪裡
             }
         };
 
@@ -296,8 +266,9 @@
                 activeNode.classList.add('selected');
             }
 
+            // 需求 2：修改為在當前分頁直接進行跳轉 (不再打開新視窗)
             if (config.links[position]) {
-                window.open(config.links[position], '_blank');
+                window.location.href = config.links[position];
             }
         }
     </script>
