@@ -19,16 +19,16 @@
             background-color: #000;
         }
 
-        /* 全螢幕 YouTube 背景劇場模式（滿版且禁止點擊干擾） */
+        /* 🎬 核心修改：全螢幕 YouTube 背景劇場模式（滿版、置底且不干擾滑鼠點擊） */
         .video-background {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2; /* 放在最底層 */
             overflow: hidden;
-            pointer-events: none; /* 讓滑鼠穿透影片，只點擊前方的壘包 */
+            pointer-events: none; /* 滑鼠直接穿透影片，不干擾點擊前方的壘包 */
         }
 
         .video-background iframe {
@@ -36,20 +36,20 @@
             top: 50%;
             left: 50%;
             width: 100vw;
-            height: 56.25vw; /* 16:9 黃金比例 */
+            height: 56.25vw; /* 16:9 比例 */
             min-height: 100vh;
             min-width: 177.77vh;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%); /* 完美居中裁切，防止出現黑邊 */
         }
 
-        /* 黑色半透明遮罩層 */
+        /* 黑色半透明遮罩層（讓影片變暗，突顯前方的金色選單） */
         .overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.6); /* 0.6 代表 60% 黑色遮罩 */
             z-index: -1;
         }
 
@@ -158,7 +158,7 @@
         .bottom-base { bottom: -42.5px; right: -42.5px; }
         .left-base { bottom: -42.5px; left: -42.5px; }
 
-        /* 中央大圓圈裝飾（寬高 60px，無狼頭） */
+        /* 中央大圓圈裝飾 */
         .center-mound {
             position: absolute;
             width: 60px;
@@ -167,7 +167,7 @@
             background-color: rgba(20, 20, 20, 0.5);
             box-shadow: inset 0 0 10px rgba(184, 151, 66, 0.3);
             pointer-events: none;
-            border-radius: 50%; /* 完美正圓 */
+            border-radius: 50%;
         }
 
         @keyframes pulse {
@@ -185,15 +185,22 @@
 </head>
 <body>
 
-    <!-- 🎬 YouTube 全螢幕背景影片區 (已成功將您給的 HTML 代碼融合新版自動播放參數) -->
+    <!-- 📺 核心修改：這段嵌入了您的專屬影片，並加上了全螢幕背景播放所需的所有進階網址參數 -->
     <div class="video-background">
-        <iframe src="https://youtube.com" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <iframe 
+            src="https://youtube.com" 
+            title="YouTube video player" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            referrerpolicy="strict-origin-when-cross-origin" 
+            allowfullscreen>
+        </iframe>
     </div>
 
     <!-- 半透明深色遮罩層 -->
     <div class="overlay"></div>
 
-    <!-- 主要內容區 -->
+    <!-- 主要內容區（覆蓋在全螢幕影片前方的壘包選單） -->
     <div class="container">
         <div class="large-diamond-orbit">
             
@@ -240,7 +247,7 @@
         // 🔥【超直覺全面自訂設定區】請在這裡修改您的所有字體與網址
         // ==========================================================
         const config = {
-            // 1.【在這裡直接修改四個壘包下方的文字！】
+            // 1. 修改四個壘包下方的文字
             labels: {
                 top:    "首頁",  
                 right:  "FB",  
@@ -256,12 +263,12 @@
                 left:   "https://ibb.co"  
             },
 
-            // 3. 點擊壘包後，在新分頁跳轉的網頁網址
+            // 3. 點擊壘包後跳轉的目標網址
             links: {
                 top:    "https://google.com", 
-                right:  "https://facebook.com",   // 請替換為您的 FB 粉絲團網址
-                bottom: "https://instagram.com",  // 請替換為您的 IG 專頁網址
-                left:   "https://www.youtube.com"     // 請替換為您的 YT 頻道網址
+                right:  "https://facebook.com",   
+                bottom: "https://instagram.com",  
+                left:   "https://www.youtube.com"     
             }
         };
 
@@ -280,18 +287,15 @@
 
         // 處理壘包點擊跳轉與發光效果
         function handleBaseClick(position) {
-            // 移除所有壘包的 selected 樣式
             document.querySelectorAll('.base-node').forEach(node => {
                 node.classList.remove('selected');
             });
             
-            // 為當前點擊的壘包加上 selected 發光效果
             const activeNode = document.querySelector(`.${position}-base`);
             if (activeNode) {
                 activeNode.classList.add('selected');
             }
 
-            // 在新視窗/新分頁打開目標連結
             if (config.links[position]) {
                 window.open(config.links[position], '_blank');
             }
