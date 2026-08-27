@@ -185,9 +185,9 @@
 </head>
 <body>
 
-    <!-- YouTube 全螢幕背景影片區 -->
+    <!-- YouTube 全螢幕背景影片區 (已將您的專屬影片 HTML 融合最新背景播放參數) -->
     <div class="video-background">
-        <iframe id="ytPlayer" src="" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+        <iframe src="https://youtube.com" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
     </div>
 
     <!-- 半透明深色遮罩層 -->
@@ -239,21 +239,16 @@
         // ==========================================================
         // 🔥【超直覺全面自訂設定區】請在這裡修改您的所有字體與網址
         // ==========================================================
-        
         const config = {
-            // 1. YouTube 影片 ID：
-            // 已經為您設定為 STRAY 棒球隊形象影片 ID "3qV05Bhzek4"
-            youtubeVideoId: "3qV05Bhzek4", 
-
-            // 2.【在這裡直接修改四個壘包下方的文字！】
+            // 1.【在這裡直接修改四個壘包下方的文字！】
             labels: {
-                top:    "首頁",  // 頂部壘包要顯示的字
-                right:  "FB",  // 右側壘包要顯示的字
-                bottom: "IG",  // 底部壘包要顯示的字
-                left:   "YT" // 左側壘包要顯示的字
+                top:    "首頁",  
+                right:  "FB",  
+                bottom: "IG",  
+                left:   "YT" 
             },
 
-            // 3. 四個壘包的圖片 Icon 網址 (填入圖片連結，建議用去背的 PNG 檔)
+           // 2. 四個壘包的圖片 Icon 網址 (填入圖片連結，建議用去背的 PNG 檔)
             icons: {
                 top:    "https://i.ibb.co/rCptGSd/STRAYICON.png", // NEWS 圖標
                 right:  "https://i.ibb.co/W4K1DWsJ/500px-2023-Facebook-icon-svg.webp",   // STAT 圖標
@@ -261,7 +256,7 @@
                 left:   "https://i.ibb.co/LXN2tf5N/960px-You-Tube-full-color-icon-2017-svg.webp"  // STRAY 圖標
             },
 
-            // 4. 點擊壘包後，在新分頁跳轉的網頁網址
+            // 3. 點擊壘包後，在新分頁跳轉的網頁網址
             links: {
                 top:    "https://sites.google.com/view/straybaseball-team/%E9%A6%96%E9%A0%81?authuser=0", // 點擊 NEWS 跳轉到哪裡
                 right:  "https://www.facebook.com/groups/1057300540985213/posts/26518693757752541/",      // 點擊 STAT 跳轉到哪裡
@@ -270,40 +265,36 @@
             }
         };
 
-        // ==========================================================
-        // ⚙️ 系統核心渲染邏輯（會自動抓取上方填寫的內容更新網頁，請勿更動）
-        // ==========================================================
-        
-        // 1. 自動載入 YouTube 播放器核心參數（自動播放、靜音、隱藏操作列、強制無縫循環）
-        document.getElementById('ytPlayer').src = `https://youtube.com/embed/${config.youtubeVideoId}?autoplay=1&mute=1&loop=1&playlist=${config.youtubeVideoId}&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&enablejsapi=1`;
-
-        // 2. 自動套用自訂文字
+        // 初始化設定，將文字和圖片渲染到網頁上
         document.getElementById('topText').innerText = config.labels.top;
-        document.getElementById('rightText').innerText = config.labels.right;
-        document.getElementById('bottomText').innerText = config.labels.bottom;
-        document.getElementById('leftText').innerText = config.labels.left;
-
-        // 3. 自動套用自訂圖片 Icon
         document.getElementById('topIcon').src = config.icons.top;
+
+        document.getElementById('rightText').innerText = config.labels.right;
         document.getElementById('rightIcon').src = config.icons.right;
+
+        document.getElementById('bottomText').innerText = config.labels.bottom;
         document.getElementById('bottomIcon').src = config.icons.bottom;
+
+        document.getElementById('leftText').innerText = config.labels.left;
         document.getElementById('leftIcon').src = config.icons.left;
 
-        // 4. 處理點擊與放大發光動畫，並開新分頁跳轉
+        // 處理壘包點擊跳轉與發光效果
         function handleBaseClick(position) {
-            const eventTarget = document.querySelector(`.${position}-base`);
+            // 移除所有壘包的 selected 樣式
+            document.querySelectorAll('.base-node').forEach(node => {
+                node.classList.remove('selected');
+            });
             
-            // 清除舊有的選取效果
-            document.querySelectorAll('.base-node').forEach(node => node.classList.remove('selected'));
-            
-            // 加上當前選取特效
-            eventTarget.classList.add('selected');
-            
-            // 延遲 0.5 秒看完特效後跳轉
-            setTimeout(() => {
+            // 為當前點擊的壘包加上 selected 發光效果
+            const activeNode = document.querySelector(`.${position}-base`);
+            if (activeNode) {
+                activeNode.classList.add('selected');
+            }
+
+            // 在新視窗/新分頁打開目標連結
+            if (config.links[position]) {
                 window.open(config.links[position], '_blank');
-                eventTarget.classList.remove('selected');
-            }, 500);
+            }
         }
     </script>
 </body>
