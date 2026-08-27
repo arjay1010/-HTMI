@@ -155,7 +155,7 @@
         /* ⚾ 飛行的棒球樣式 */
         .flying-ball {
             position: absolute;
-            width: 32px;   /* 可以根據你的棒球圖片尺寸自行調整寬高 */
+            width: 32px;   
             height: 32px;
             object-fit: contain;
             pointer-events: none; 
@@ -164,7 +164,8 @@
             left: 50%;
             margin-top: -16px;
             margin-left: -16px;
-            transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            /* 投球動畫飛行速度（0.4秒） */
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         @keyframes pulse {
@@ -192,8 +193,9 @@
             <!-- 中央放大版裝飾圓圈 -->
             <div class="center-mound"></div>
             
+            <!-- 傳入 event 參數確保點擊時能被攔截延遲 -->
             <!-- 頂部壘包 -->
-            <div class="base-node top-base" onclick="handleBaseClick('top')">
+            <div class="base-node top-base" onclick="handleBaseClick(event, 'top')">
                 <div class="base-content">
                     <img id="topIcon" class="base-icon-img" src="" alt="icon">
                     <span id="topText" class="base-text"></span>
@@ -201,7 +203,7 @@
             </div>
 
             <!-- 右側壘包 -->
-            <div class="base-node right-base" onclick="handleBaseClick('right')">
+            <div class="base-node right-base" onclick="handleBaseClick(event, 'right')">
                 <div class="base-content">
                     <img id="rightIcon" class="base-icon-img" src="" alt="icon">
                     <span id="rightText" class="base-text"></span>
@@ -209,7 +211,7 @@
             </div>
 
             <!-- 底部壘包 -->
-            <div class="base-node bottom-base" onclick="handleBaseClick('bottom')">
+            <div class="base-node bottom-base" onclick="handleBaseClick(event, 'bottom')">
                 <div class="base-content">
                     <img id="bottomIcon" class="base-icon-img" src="" alt="icon">
                     <span id="bottomText" class="base-text"></span>
@@ -217,7 +219,7 @@
             </div>
 
             <!-- 左側壘包 -->
-            <div class="base-node left-base" onclick="handleBaseClick('left')">
+            <div class="base-node left-base" onclick="handleBaseClick(event, 'left')">
                 <div class="base-content">
                     <img id="leftIcon" class="base-icon-img" src="" alt="icon">
                     <span id="leftText" class="base-text"></span>
@@ -243,20 +245,20 @@
                 left:   "YT" 
             },
 
-             // 3. 四個壘包的圖片 Icon 網址 (填入圖片連結，建議用去背的 PNG 檔)
+            // 四個壘包的圖片 Icon 網址
             icons: {
-                top:    "https://i.ibb.co/rCptGSd/STRAYICON.png", // NEWS 圖標
-                right:  "https://i.ibb.co/W4K1DWsJ/500px-2023-Facebook-icon-svg.webp",   // STAT 圖標
-                bottom: "https://i.ibb.co/0j5RpbFs/500px-Instagram-icon.webp", // LIVE 圖標
-                left:   "https://i.ibb.co/LXN2tf5N/960px-You-Tube-full-color-icon-2017-svg.webp"  // STRAY 圖標
+                top:    "https://ibb.co", 
+                right:  "https://ibb.co",   
+                bottom: "https://ibb.co", 
+                left:   "https://ibb.co"  
             },
 
-            // 4. 點擊壘包後，在新分頁跳轉的網頁網址
+            // 點擊壘包後跳轉的目標網址
             links: {
-                top:    "https://sites.google.com/view/straybaseball-team/%E9%A6%96%E9%A0%81?authuser=0", // 點擊 NEWS 跳轉到哪裡
-                right:  "https://www.facebook.com/groups/1057300540985213/posts/26518693757752541/",      // 點擊 STAT 跳轉到哪裡
-                bottom: "https://www.instagram.com/stray.official.baseball/", // 點擊 LIVE 跳轉到哪裡
-                left:   "https://www.youtube.com/@Stray%E6%A3%92%E7%90%83%E9%9A%8A"       // 點擊 STRAY 跳轉到哪裡
+                top:    "https://google.com", 
+                right:  "https://facebook.com",   
+                bottom: "https://instagram.com",  
+                left:   "https://youtube.com"     
             }
         };
 
@@ -274,26 +276,31 @@
         document.getElementById('leftIcon').src = config.icons.left;
 
         // 處理壘包點擊跳轉與發光效果
-        function handleBaseClick(position) {
+        function handleBaseClick(e, position) {
+            // 核心修改：攔截點擊事件，阻止它立刻跳轉
+            e.preventDefault();
+
             const activeNode = document.querySelector(`.${position}-base`);
             if (!activeNode) return;
 
-            // 執行投球動態特效（點擊後先投球，球到才執行跳轉）
+            // 先讓球完整飛過去
             throwBaseball(activeNode, function() {
+                // 球到了，亮起發光效果
                 document.querySelectorAll('.base-node').forEach(node => {
                     node.classList.remove('selected');
                 });
                 activeNode.classList.add('selected');
 
+                // 動畫演完 0.4 秒後，這時候才允許網頁執行跳轉網址
                 if (config.links[position]) {
                     window.location.href = config.links[position];
                 }
             });
         }
 
-        // ⚾ 動態投球核心邏輯（建立球體 -> 飛行前進 -> 撞擊消失）
+        // ⚾ 動態投球核心邏輯
         function throwBaseball(targetNode, callback) {
-            // 如果使用者還沒填寫圖片網址，直接跳過動畫去跳轉網頁
+            // 如果你還沒填圖片網址，就不播動畫直接跳轉網頁
             if (!config.baseballImageUrl) {
                 if (callback) callback();
                 return;
@@ -307,9 +314,5 @@
             
             diamond.appendChild(ball);
 
-            // 計算目標壘包相對於大菱形中心的距離位置
+            // 計算目標壘包位置
             const targetX = targetNode.offsetLeft + (targetNode.offsetWidth / 2) - (diamond.offsetWidth / 2);
-            const targetY = targetNode.offsetTop + (targetNode.offsetHeight / 2) - (diamond.offsetHeight / 2);
-
-            setTimeout(() => {
-                // 讓球產生平移並一邊旋轉飛出去
