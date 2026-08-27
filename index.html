@@ -3,225 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>棒球菱形互動儀表板</title>
+    <title>棒球菱形互動儀表板 (YouTube 背景版)</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body, html { width: 100%; height: 100%; overflow: hidden; font-family: sans-serif; background-color: #000; }
 
-        body, html {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #000;
-        }
-
-        /* 全螢幕影片背景 */
+        /* 全螢幕 YouTube 背景劇場模式 */
         .video-background {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
-            overflow: hidden;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2; overflow: hidden; pointer-events: none; /* 讓滑鼠可以穿透點擊前方的壘包 */
+        }
+        .video-background iframe {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 100vw; height: 56.25vw; /* 16:9 比例 */
+            min-height: 100vh; min-width: 177.77vh;
+            transform: translate(-50%, -50%);
         }
 
-        .video-background video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* 黑色半透明遮罩 */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: -1;
-        }
-
-        /* 主要置中容器 */
-        .container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: -1; }
+        .container { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
+        
         /* 大型菱形外框 */
         .large-diamond-orbit {
-            position: relative;
-            width: 480px;
-            height: 480px;
+            position: relative; width: 480px; height: 480px;
             border: 2px solid rgba(184, 151, 66, 0.4);
-            transform: rotate(45deg);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            transform: rotate(45deg); display: flex; justify-content: center; align-items: center;
         }
 
-        /* 四個角落的互動壘包 */
+        /* 互動壘包 */
         .base-node {
-            position: absolute;
-            width: 85px;
-            height: 85px;
-            background-color: rgba(15, 15, 15, 0.9);
-            border: 3px solid #b89742;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            z-index: 10;
+            position: absolute; width: 85px; height: 85px;
+            background-color: rgba(15, 15, 15, 0.9); border: 3px solid #b89742;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6); cursor: pointer;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); z-index: 10;
         }
-
-        /* 內容物轉回正向 */
         .base-content {
-            transform: rotate(-45deg);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: #b89742;
-            text-align: center;
-            width: 100%;
-            height: 100%;
-            padding: 5px;
+            transform: rotate(-45deg); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; color: #b89742;
+            text-align: center; width: 100%; height: 100%; padding: 5px;
         }
+        .base-icon-img { width: 32px; height: 32px; object-fit: contain; margin-bottom: 4px; transition: transform 0.3s ease; }
+        .base-text { font-size: 11px; font-weight: 900; letter-spacing: 1px; }
 
-        /* 壘包內的圖片 Icon 樣式 */
-        .base-icon-img {
-            width: 32px;
-            height: 32px;
-            object-fit: contain;
-            margin-bottom: 4px;
-            transition: transform 0.3s ease;
-        }
+        /* 懸停與點擊效果 */
+        .base-node:hover { transform: scale(1.18); background-color: #b89742; box-shadow: 0 0 25px #b89742; border-color: #fff; }
+        .base-node:hover .base-content { color: #000; }
+        .base-node:hover .base-icon-img { transform: scale(1.1); }
+        .base-node.selected { transform: scale(1.3); background-color: #fff; border-color: #b89742; animation: pulse 0.5s infinite alternate; }
+        .base-node.selected .base-content { color: #000; }
 
-        /* 壘包文字 */
-        .base-text {
-            font-size: 11px;
-            font-weight: 900;
-            letter-spacing: 1px;
-        }
-
-        /* 懸停效果 */
-        .base-node:hover {
-            transform: scale(1.18);
-            background-color: #b89742;
-            box-shadow: 0 0 25px #b89742;
-            border-color: #fff;
-        }
-
-        .base-node:hover .base-content {
-            color: #000;
-        }
-
-        /* 讓圖片在懸停時稍微放大 */
-        .base-node:hover .base-icon-img {
-            transform: scale(1.1);
-        }
-
-        /* 點擊選取效果 */
-        .base-node.selected {
-            transform: scale(1.3);
-            background-color: #fff;
-            border-color: #b89742;
-            box-shadow: 0 0 35px #fff, 0 0 15px #b89742;
-            animation: pulse 0.5s infinite alternate;
-        }
-
-        .base-node.selected .base-content {
-            color: #000;
-        }
-
-        /* 精準定位在大型菱形的四個頂點 */
+        /* 位置精準定位 */
         .top-base { top: -42.5px; left: -42.5px; }
         .right-base { top: -42.5px; right: -42.5px; }
         .bottom-base { bottom: -42.5px; right: -42.5px; }
         .left-base { bottom: -42.5px; left: -42.5px; }
 
-        /* 中央迷你裝飾壘包（無狼頭） */
+        /* 🟢 中央圓形（已調大至 60px） */
         .center-mound {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            border: 2px solid rgba(184, 151, 66, 0.6);
-            background-color: rgba(20, 20, 20, 0.5);
-            box-shadow: inset 0 0 10px rgba(184, 151, 66, 0.3);
-            pointer-events: none;
-            border-radius: 50%; /* 👈 加上這行，立刻變成圓形 */
+            position: absolute; width: 60px; height: 60px;
+            border: 2px solid rgba(184, 151, 66, 0.6); background-color: rgba(20, 20, 20, 0.5);
+            box-shadow: inset 0 0 10px rgba(184, 151, 66, 0.3); pointer-events: none;
+            border-radius: 50%;
         }
 
-        @keyframes pulse {
-            0% { box-shadow: 0 0 20px #fff; }
-            100% { box-shadow: 0 0 40px #b89742; }
-        }
-
-        @media (max-width: 600px) {
-            .large-diamond-orbit {
-                transform: rotate(45deg) scale(0.7);
-            }
-        }
+        @keyframes pulse { 0% { box-shadow: 0 0 20px #fff; } 100% { box-shadow: 0 0 40px #b89742; } }
+        @media (max-width: 600px) { .large-diamond-orbit { transform: rotate(45deg) scale(0.7); } }
     </style>
 </head>
 <body>
 
-    <!-- 背景影片區 -->
+    <!-- 背景影片區 (使用 YouTube 內嵌框架) -->
     <div class="video-background">
-        <video id="bgVideo" autoplay loop muted playsinline></video>
+        <iframe id="ytPlayer" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     </div>
 
     <div class="overlay"></div>
 
     <div class="container">
         <div class="large-diamond-orbit">
-            
             <div class="center-mound"></div>
             
-            <!-- 頂部壘包 -->
             <div class="base-node top-base" onclick="handleBaseClick('top')">
                 <div class="base-content">
                     <img id="topIcon" class="base-icon-img" src="" alt="icon">
-                    <span class="base-text">NEWS</span>
+                    <span class="base-text">首頁</span>
                 </div>
             </div>
-
-            <!-- 右側壘包 -->
             <div class="base-node right-base" onclick="handleBaseClick('right')">
                 <div class="base-content">
                     <img id="rightIcon" class="base-icon-img" src="" alt="icon">
-                    <span class="base-text">STAT</span>
+                    <span class="base-text">FB</span>
                 </div>
             </div>
-
-            <!-- 底部壘包 -->
             <div class="base-node bottom-base" onclick="handleBaseClick('bottom')">
                 <div class="base-content">
                     <img id="bottomIcon" class="base-icon-img" src="" alt="icon">
-                    <span class="base-text">LIVE</span>
+                    <span class="base-text">IG</span>
                 </div>
             </div>
-
-            <!-- 左側壘包 -->
             <div class="base-node left-base" onclick="handleBaseClick('left')">
                 <div class="base-content">
                     <img id="leftIcon" class="base-icon-img" src="" alt="icon">
-                    <span class="base-text">STRAY</span>
+                    <span class="base-text">YT</span>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -231,8 +119,9 @@
         // ==========================================
         
         const config = {
-            // 1. 全螢幕背景影片網址 (必須是直連 .mp4 檔案的網址)
-            videoUrl: "test.mp4",
+            // 1. 🟢 填入任何 YouTube 影片的 ID 即可！
+            // 例如影片網址是 https://youtube.com，則 ID 就是 dQw4w9WgXcQ
+            youtubeVideoId: "https://www.youtube.com/watch?v=3qV05Bhzek4", 
 
             // 2. 四個壘包的圖片 Icon 網址 (填入圖片連結，建議用去背的 PNG 檔)
             icons: {
@@ -252,27 +141,22 @@
         };
 
         // ==========================================
-        // ⚙️ 系統核心邏輯 (請勿隨意更動)
+        // ⚙️ 系統核心邏輯
         // ==========================================
         
-        // 初始化載入影片與圖片
-        document.getElementById('bgVideo').src = config.videoUrl;
+        // 載入 YouTube 播放器設定（自動靜音、循環、隱藏控制列）
+        document.getElementById('ytPlayer').src = `https://youtube.com/embed/${config.youtubeVideoId}?autoplay=1&mute=1&loop=1&playlist=${config.youtubeVideoId}&controls=0&showinfo=0&rel=0&modestbranding=1`;
+        
+        // 載入圖片
         document.getElementById('topIcon').src = config.icons.top;
         document.getElementById('rightIcon').src = config.icons.right;
         document.getElementById('bottomIcon').src = config.icons.bottom;
         document.getElementById('leftIcon').src = config.icons.left;
 
-        // 處理點擊與動畫
         function handleBaseClick(position) {
             const eventTarget = document.querySelector(`.${position}-base`);
-            
-            // 清除其他選取狀態
             document.querySelectorAll('.base-node').forEach(node => node.classList.remove('selected'));
-            
-            // 加上選取特效
             eventTarget.classList.add('selected');
-            
-            // 延遲 0.5 秒後跳轉分頁
             setTimeout(() => {
                 window.open(config.links[position], '_blank');
                 eventTarget.classList.remove('selected');
