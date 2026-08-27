@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 需求 1：網頁名稱改為 STRAYBaseball -->
     <title>STRAYBaseball</title>
     
-    <!-- 需求 1：在這裡放上您的網址作為網頁標籤的小圖標 (Favicon) -->
-    <link rel="icon" type="image/png" href="https://i.ibb.co/rCptGSd/STRAYICON.png">
+    <!-- 網頁標籤的小圖標 (Favicon) -->
+    <link rel="icon" type="image/png" href="https://ibb.co">
 
     <style>
         * {
@@ -74,7 +73,7 @@
             z-index: 10;
         }
 
-        /* 將內容物（文字與Icon）轉回正向 */
+        /* 將內容物轉回正向 */
         .base-content {
             transform: rotate(-45deg);
             display: flex;
@@ -140,7 +139,7 @@
         .bottom-base { bottom: -42.5px; right: -42.5px; }
         .left-base { bottom: -42.5px; left: -42.5px; }
 
-        /* 中央大圓圈裝飾 */
+        /* 中央大圓圈裝飾（投手丘） */
         .center-mound {
             position: absolute;
             width: 60px;
@@ -150,6 +149,24 @@
             box-shadow: inset 0 0 10px rgba(184, 151, 66, 0.3);
             pointer-events: none;
             border-radius: 50%;
+            z-index: 5;
+        }
+
+        /* ⚾ 飛行的棒球樣式 */
+        .flying-ball {
+            position: absolute;
+            width: 24px;   /* 棒球的大小，可自行調整 */
+            height: 24px;
+            object-fit: contain;
+            pointer-events: none; /* 防止棒球干擾滑鼠點擊 */
+            z-index: 100; /* 確保球飛在最上層 */
+            /* 讓球的中心點完美對齊投手丘中心 */
+            top: 50%;
+            left: 50%;
+            margin-top: -12px;
+            margin-left: -12px;
+            /* 投球動畫速度設定（0.35秒，可自行調快或調慢） */
+            transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         @keyframes pulse {
@@ -172,7 +189,8 @@
 
     <!-- 主要內容區 -->
     <div class="container">
-        <div class="large-diamond-orbit">
+        <!-- 加上 id="diamond" 方便 JavaScript 計算球飛行的起點 -->
+        <div id="diamond" class="large-diamond-orbit">
             
             <!-- 中央放大版裝飾圓圈 -->
             <div class="center-mound"></div>
@@ -217,6 +235,9 @@
         // 🔥【超直覺全面自訂設定區】請在這裡修改您的所有字體與網址
         // ==========================================================
         const config = {
+            // 🌟 需求：請在這裡貼上你的「棒球圖片網址」
+            baseballImageUrl: "https://i.ibb.co/bRy9bbkk/Chat-GPT-Image-2026-8-28-01-14-07.png", // 這邊先幫你放一張預設的去背棒球，你可以直接換掉它
+
             // 四個壘包下方的文字
             labels: {
                 top:    "首頁",  
@@ -225,20 +246,20 @@
                 left:   "YT" 
             },
 
-             // 3. 四個壘包的圖片 Icon 網址 (填入圖片連結，建議用去背的 PNG 檔)
+            // 四個壘包的圖片 Icon 網址
             icons: {
-                top:    "https://i.ibb.co/rCptGSd/STRAYICON.png", // NEWS 圖標
-                right:  "https://i.ibb.co/W4K1DWsJ/500px-2023-Facebook-icon-svg.webp",   // STAT 圖標
-                bottom: "https://i.ibb.co/0j5RpbFs/500px-Instagram-icon.webp", // LIVE 圖標
-                left:   "https://i.ibb.co/LXN2tf5N/960px-You-Tube-full-color-icon-2017-svg.webp"  // STRAY 圖標
+                top:    "https://ibb.co", 
+                right:  "https://ibb.co",   
+                bottom: "https://ibb.co", 
+                left:   "https://ibb.co"  
             },
 
-            // 4. 點擊壘包後，在新分頁跳轉的網頁網址
+            // 點擊壘包後跳轉的目標網址
             links: {
-                top:    "https://sites.google.com/view/straybaseball-team/%E9%A6%96%E9%A0%81?authuser=0", // 點擊 NEWS 跳轉到哪裡
-                right:  "https://www.facebook.com/groups/1057300540985213/posts/26518693757752541/",      // 點擊 STAT 跳轉到哪裡
-                bottom: "https://www.instagram.com/stray.official.baseball/", // 點擊 LIVE 跳轉到哪裡
-                left:   "https://www.youtube.com/@Stray%E6%A3%92%E7%90%83%E9%9A%8A"       // 點擊 STRAY 跳轉到哪裡
+                top:    "https://google.com", 
+                right:  "https://facebook.com",   
+                bottom: "https://instagram.com",  
+                left:   "https://youtube.com"     
             }
         };
 
@@ -257,20 +278,34 @@
 
         // 處理壘包點擊跳轉與發光效果
         function handleBaseClick(position) {
-            document.querySelectorAll('.base-node').forEach(node => {
-                node.classList.remove('selected');
-            });
-            
+            // 1. 抓取點擊的壘包元素
             const activeNode = document.querySelector(`.${position}-base`);
-            if (activeNode) {
-                activeNode.classList.add('selected');
-            }
+            if (!activeNode) return;
 
-            // 需求 2：修改為在當前分頁直接進行跳轉 (不再打開新視窗)
-            if (config.links[position]) {
-                window.location.href = config.links[position];
-            }
+            // 2. 執行投球動態特效
+            throwBaseball(activeNode, function() {
+                // 3. 當球飛到壘包（消失後），才執行原本的變色與跳轉邏輯
+                document.querySelectorAll('.base-node').forEach(node => {
+                    node.classList.remove('selected');
+                });
+                activeNode.classList.add('selected');
+
+                if (config.links[position]) {
+                    window.location.href = config.links[position];
+                }
+            });
         }
-    </script>
-</body>
-</html>
+
+        // ⚾ 動態投球核心邏輯
+        function throwBaseball(targetNode, callback) {
+            const diamond = document.getElementById('diamond');
+            
+            // 建立球的 HTML 圖片標籤
+            const ball = document.createElement('img');
+            ball.src = config.baseballImageUrl;
+            ball.className = 'flying-ball';
+            
+            // 將球塞入菱形軌道容器中 (起點會在投手丘正中央)
+            diamond.appendChild(ball);
+
+            // 計算目標壘包相對於大菱形中心的距離位置
