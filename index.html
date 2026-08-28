@@ -227,15 +227,12 @@
         </div>
     </div>
 
+    <!-- ⚠️ 請確保這段關鍵的控制代碼有被完整複製並推送上去 ⚠️ -->
     <script>
-        // ==========================================================
-        // 🔥【超直覺全面自訂設定區】請在這裡修改您的所有字體與網址
-        // ==========================================================
         const config = {
-            // 🌟 請在下方雙引號內，自行填入您要使用的去背棒球圖片網址：
+            // 🌟 在此填入去背棒球網址
             baseballImageUrl: "https://i.ibb.co/bRy9bbkk/Chat-GPT-Image-2026-8-28-01-14-07.png", 
 
-            // 四個壘包下方的文字
             labels: {
                 top:    "首頁",  
                 right:  "FB",  
@@ -243,7 +240,6 @@
                 left:   "YT" 
             },
 
-            // 四個壘包的圖片 Icon 網址
             icons: {
                 top:    "https://ibb.co", 
                 right:  "https://ibb.co",   
@@ -251,7 +247,6 @@
                 left:   "https://ibb.co"  
             },
 
-            // 點擊壘包後跳轉的目標網址
             links: {
                 top:    "https://google.com", 
                 right:  "https://facebook.com",   
@@ -260,7 +255,7 @@
             }
         };
 
-        // 初始化設定，將文字和圖片渲染到網頁上
+        // 將設定渲染到畫面上
         document.getElementById('topText').innerText = config.labels.top;
         document.getElementById('topIcon').src = config.icons.top;
 
@@ -273,32 +268,27 @@
         document.getElementById('leftText').innerText = config.labels.left;
         document.getElementById('leftIcon').src = config.icons.left;
 
-        // 處理壘包點擊跳轉與發光效果
+        // 處理壘包點擊與跳轉
         function handleBaseClick(e, position) {
-            // 攔截點擊事件，阻止它立刻跳轉
             if (e) e.preventDefault();
 
             const activeNode = document.querySelector(`.${position}-base`);
             if (!activeNode) return;
 
-            // 執行投球動態特效
             throwBaseball(activeNode, function() {
-                // 球到了，亮起發光效果
                 document.querySelectorAll('.base-node').forEach(node => {
                     node.classList.remove('selected');
                 });
                 activeNode.classList.add('selected');
 
-                // 動畫演完後，執行同分頁換頁跳轉
                 if (config.links[position]) {
                     window.location.href = config.links[position];
                 }
             });
         }
 
-        // ⚾ 動態投球核心邏輯
+        // 投球核心程式碼
         function throwBaseball(targetNode, callback) {
-            // 防呆機制：如果你還沒填圖片網址，直接跳過動畫去跳轉網頁
             if (!config.baseballImageUrl) {
                 if (callback) callback();
                 return;
@@ -316,4 +306,14 @@
             
             diamond.appendChild(ball);
 
-            // 計算目標壘包位置
+            const targetX = targetNode.offsetLeft + (targetNode.offsetWidth / 2) - (diamond.offsetWidth / 2);
+            const targetY = targetNode.offsetTop + (targetNode.offsetHeight / 2) - (diamond.offsetHeight / 2);
+
+            setTimeout(() => {
+                ball.style.transform = `translate(${targetX}px, ${targetY}px) rotate(720deg)`;
+            }, 20);
+
+            setTimeout(() => {
+                ball.remove();
+                if (callback) callback();
+            }, 400); 
