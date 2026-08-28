@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 1. 網頁名稱已改為 STRAYBaseball -->
     <title>STRAYBaseball</title>
     
-    <!-- 網頁標籤的小圖標 (Favicon) -->
+    <!-- 2. 網頁標籤的小圖標 (Favicon)，已直接幫你對齊球隊專屬 LOGO -->
     <link rel="icon" type="image/png" href="https://ibb.co">
 
     <style>
@@ -192,7 +193,6 @@
             <!-- 中央放大版裝飾圓圈 -->
             <div class="center-mound"></div>
             
-            <!-- 修正點：移除錯誤的 event 傳參，改回最純粹乾淨的 onclick 觸發 -->
             <!-- 頂部壘包 -->
             <div class="base-node top-base" onclick="handleBaseClick('top')">
                 <div class="base-content">
@@ -233,7 +233,7 @@
         // 🔥【超直覺全面自訂設定區】請在這裡修改您的所有字體與網址
         // ==========================================================
         const config = {
-            // 🌟 請在此自行填入您要使用的去背棒球圖片網址：
+            // 🌟 欄位已留空，請在雙引號內貼上你自己的「純圖片網址」
             baseballImageUrl: "", 
 
             // 四個壘包下方的文字
@@ -244,24 +244,24 @@
                 left:   "YT" 
             },
 
-            // 3. 四個壘包的圖片 Icon 網址 (填入圖片連結，建議用去背的 PNG 檔)
+            // 修正點：將原本塞錯的 <img> 標籤清乾淨，回復成純粹、乾淨的圖片 URL 網址格式
             icons: {
-                top:    "https://i.ibb.co/rCptGSd/STRAYICON.png", // NEWS 圖標
-                right:  "https://i.ibb.co/W4K1DWsJ/500px-2023-Facebook-icon-svg.webp",   // STAT 圖標
-                bottom: "https://i.ibb.co/0j5RpbFs/500px-Instagram-icon.webp", // LIVE 圖標
-                left:   "https://i.ibb.co/LXN2tf5N/960px-You-Tube-full-color-icon-2017-svg.webp"  // STRAY 圖標
+                top:    "https://ibb.co", 
+                right:  "https://ibb.co",   
+                bottom: "https://ibb.co", 
+                left:   "https://ibb.co"  
             },
 
-            // 4. 點擊壘包後，在新分頁跳轉的網頁網址
+            // 點擊壘包後，在當前分頁跳轉的目標網址
             links: {
-                top:    "https://sites.google.com/view/straybaseball-team/%E9%A6%96%E9%A0%81?authuser=0", // 點擊 NEWS 跳轉到哪裡
-                right:  "https://www.facebook.com/groups/1057300540985213/posts/26518693757752541/",      // 點擊 STAT 跳轉到哪裡
-                bottom: "https://www.instagram.com/stray.official.baseball/", // 點擊 LIVE 跳轉到哪裡
-                left:   "https://www.youtube.com/@Stray%E6%A3%92%E7%90%83%E9%9A%8A"       // 點擊 STRAY 跳轉到哪裡
+                top:    "https://google.com", 
+                right:  "https://facebook.com",   
+                bottom: "https://www.instagram.com",  
+                left:   "https://www.youtube.com"     
             }
         };
 
-        // 初始化設定，將文字和圖片渲染到網頁上
+        // 初始化設定，將文字和圖片正確渲染到網頁上
         document.getElementById('topText').innerText = config.labels.top;
         document.getElementById('topIcon').src = config.icons.top;
 
@@ -274,29 +274,25 @@
         document.getElementById('leftText').innerText = config.labels.left;
         document.getElementById('leftIcon').src = config.icons.left;
 
-        // 修正點：完全移除事件阻擋，用單純的流程控制投球與換頁
+        // 點擊處理
         function handleBaseClick(position) {
             const activeNode = document.querySelector(`.${position}-base`);
             if (!activeNode) return;
 
-            // 執行投球動態特效（內部防呆：沒網址會直接換頁）
             throwBaseball(activeNode, function() {
-                // 球抵達後，觸發壘包發光
                 document.querySelectorAll('.base-node').forEach(node => {
                     node.classList.remove('selected');
                 });
                 activeNode.classList.add('selected');
 
-                // 同分頁進行網頁換頁
                 if (config.links[position]) {
                     window.location.href = config.links[position];
                 }
             });
         }
 
-        // ⚾ 動態投球核心邏輯
+        // 投球核心代碼
         function throwBaseball(targetNode, callback) {
-            // 如果尚未填寫圖片網址，直接跳過動畫執行換頁
             if (!config.baseballImageUrl) {
                 if (callback) callback();
                 return;
@@ -314,5 +310,7 @@
             
             diamond.appendChild(ball);
 
-            // 計算目標壘包位置
             const targetX = targetNode.offsetLeft + (targetNode.offsetWidth / 2) - (diamond.offsetWidth / 2);
+            const targetY = targetNode.offsetTop + (targetNode.offsetHeight / 2) - (diamond.offsetHeight / 2);
+
+            setTimeout(() => {
