@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 1. 網頁名稱已改為 STRAYBaseball -->
     <title>STRAYBaseball</title>
     
-    <!-- 2. 網頁標籤的小圖標 (Favicon)，已直接幫你對齊球隊專屬 LOGO -->
+    <!-- 網頁標籤的小圖標 (Favicon) -->
     <link rel="icon" type="image/png" href="https://ibb.co">
 
     <style>
@@ -153,21 +152,6 @@
             z-index: 5;
         }
 
-        /* ⚾ 飛行的棒球樣式 */
-        .flying-ball {
-            position: absolute;
-            width: 32px;   
-            height: 32px;
-            object-fit: contain;
-            pointer-events: none; 
-            z-index: 100; 
-            top: 50%;
-            left: 50%;
-            margin-top: -16px;
-            margin-left: -16px;
-            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
         @keyframes pulse {
             0% { box-shadow: 0 0 20px #fff; }
             100% { box-shadow: 0 0 40px #b89742; }
@@ -188,7 +172,7 @@
 
     <!-- 主要內容區 -->
     <div class="container">
-        <div id="diamond" class="large-diamond-orbit">
+        <div class="large-diamond-orbit">
             
             <!-- 中央放大版裝飾圓圈 -->
             <div class="center-mound"></div>
@@ -233,9 +217,6 @@
         // 🔥【超直覺全面自訂設定區】請在這裡修改您的所有字體與網址
         // ==========================================================
         const config = {
-            // 🌟 欄位已留空，請在雙引號內貼上你自己的「純圖片網址」
-            baseballImageUrl: "", 
-
             // 四個壘包下方的文字
             labels: {
                 top:    "首頁",  
@@ -244,7 +225,7 @@
                 left:   "YT" 
             },
 
-            // 修正點：將原本塞錯的 <img> 標籤清乾淨，回復成純粹、乾淨的圖片 URL 網址格式
+            // 🌟 已修正為純網址字串格式，絕不卡死、絕不破圖
             icons: {
                 top:    "https://ibb.co", 
                 right:  "https://ibb.co",   
@@ -252,16 +233,16 @@
                 left:   "https://ibb.co"  
             },
 
-            // 點擊壘包後，在當前分頁跳轉的目標網址
+            // 點擊壘包後跳轉的目標網址
             links: {
                 top:    "https://google.com", 
                 right:  "https://facebook.com",   
-                bottom: "https://www.instagram.com",  
-                left:   "https://www.youtube.com"     
+                bottom: "https://instagram.com",  
+                left:   "https://youtube.com"     
             }
         };
 
-        // 初始化設定，將文字和圖片正確渲染到網頁上
+        // 初始化設定，將文字和圖片渲染到網頁上
         document.getElementById('topText').innerText = config.labels.top;
         document.getElementById('topIcon').src = config.icons.top;
 
@@ -274,43 +255,300 @@
         document.getElementById('leftText').innerText = config.labels.left;
         document.getElementById('leftIcon').src = config.icons.left;
 
-        // 點擊處理
+        // 純粹的點擊變色與原分頁跳轉邏輯（無動畫衝突）
         function handleBaseClick(position) {
-            const activeNode = document.querySelector(`.${position}-base`);
-            if (!activeNode) return;
-
-            throwBaseball(activeNode, function() {
-                document.querySelectorAll('.base-node').forEach(node => {
-                    node.classList.remove('selected');
-                });
-                activeNode.classList.add('selected');
-
-                if (config.links[position]) {
-                    window.location.href = config.links[position];
-                }
+            // 切換選取發光效果
+            document.querySelectorAll('.base-node').forEach(node => {
+                node.classList.remove('selected');
             });
+            
+            const activeNode = document.querySelector(`.${position}-base`);
+            if (activeNode) {
+                activeNode.classList.add('selected');
+            }
+
+            // 在當前分頁直接跳轉網址
+            if (config.links[position]) {
+                window.location.href = config.links[position];
+            }
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STRAYBaseball</title>
+    
+    <!-- 網頁標籤的小圖標 (Favicon) -->
+    <link rel="icon" type="image/png" href="https://ibb.co">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        // 投球核心代碼
-        function throwBaseball(targetNode, callback) {
-            if (!config.baseballImageUrl) {
-                if (callback) callback();
-                return;
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #000;
+        }
+
+        /* 黑色半透明遮罩層 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: -1;
+        }
+
+        /* 置中容器 */
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 大型菱形外框 */
+        .large-diamond-orbit {
+            position: relative;
+            width: 480px;
+            height: 480px;
+            border: 2px solid rgba(184, 151, 66, 0.4);
+            transform: rotate(45deg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 四個角落的互動壘包 */
+        .base-node {
+            position: absolute;
+            width: 85px;
+            height: 85px;
+            background-color: rgba(15, 15, 15, 0.9);
+            border: 3px solid #b89742;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            z-index: 10;
+        }
+
+        /* 將內容物轉回正向 */
+        .base-content {
+            transform: rotate(-45deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #b89742;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            padding: 5px;
+        }
+
+        /* 壘包內的圖片 Icon 樣式 */
+        .base-icon-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            margin-bottom: 4px;
+            transition: transform 0.3s ease;
+        }
+
+        /* 壘包下方的自訂文字 */
+        .base-text {
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        /* 懸停動態效果 */
+        .base-node:hover {
+            transform: scale(1.18);
+            background-color: #b89742;
+            box-shadow: 0 0 25px #b89742;
+            border-color: #fff;
+        }
+
+        .base-node:hover .base-content {
+            color: #000;
+        }
+
+        .base-node:hover .base-icon-img {
+            transform: scale(1.1);
+        }
+
+        /* 點擊選取發光效果 */
+        .base-node.selected {
+            transform: scale(1.3);
+            background-color: #fff;
+            border-color: #b89742;
+            box-shadow: 0 0 35px #fff, 0 0 15px #b89742;
+            animation: pulse 0.5s infinite alternate;
+        }
+
+        .base-node.selected .base-content {
+            color: #000;
+        }
+
+        /* 壘包精準定位在菱形的四個頂點上 */
+        .top-base { top: -42.5px; left: -42.5px; }
+        .right-base { top: -42.5px; right: -42.5px; }
+        .bottom-base { bottom: -42.5px; right: -42.5px; }
+        .left-base { bottom: -42.5px; left: -42.5px; }
+
+        /* 中央大圓圈裝飾（投手丘） */
+        .center-mound {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border: 2px solid rgba(184, 151, 66, 0.6);
+            background-color: rgba(20, 20, 20, 0.5);
+            box-shadow: inset 0 0 10px rgba(184, 151, 66, 0.3);
+            pointer-events: none;
+            border-radius: 50%;
+            z-index: 5;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 20px #fff; }
+            100% { box-shadow: 0 0 40px #b89742; }
+        }
+
+        /* RWD 手機版自動縮放 */
+        @media (max-width: 600px) {
+            .large-diamond-orbit {
+                transform: rotate(45deg) scale(0.7);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 半透明深色遮罩層 -->
+    <div class="overlay"></div>
+
+    <!-- 主要內容區 -->
+    <div class="container">
+        <div class="large-diamond-orbit">
+            
+            <!-- 中央放大版裝飾圓圈 -->
+            <div class="center-mound"></div>
+            
+            <!-- 頂部壘包 -->
+            <div class="base-node top-base" onclick="handleBaseClick('top')">
+                <div class="base-content">
+                    <img id="topIcon" class="base-icon-img" src="" alt="icon">
+                    <span id="topText" class="base-text"></span>
+                </div>
+            </div>
+
+            <!-- 右側壘包 -->
+            <div class="base-node right-base" onclick="handleBaseClick('right')">
+                <div class="base-content">
+                    <img id="rightIcon" class="base-icon-img" src="" alt="icon">
+                    <span id="rightText" class="base-text"></span>
+                </div>
+            </div>
+
+            <!-- 底部壘包 -->
+            <div class="base-node bottom-base" onclick="handleBaseClick('bottom')">
+                <div class="base-content">
+                    <img id="bottomIcon" class="base-icon-img" src="" alt="icon">
+                    <span id="bottomText" class="base-text"></span>
+                </div>
+            </div>
+
+            <!-- 左側壘包 -->
+            <div class="base-node left-base" onclick="handleBaseClick('left')">
+                <div class="base-content">
+                    <img id="leftIcon" class="base-icon-img" src="" alt="icon">
+                    <span id="leftText" class="base-text"></span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ==========================================================
+        // 🔥【超直覺全面自訂設定區】請在這裡修改您的所有字體與網址
+        // ==========================================================
+        const config = {
+            // 四個壘包下方的文字
+            labels: {
+                top:    "首頁",  
+                right:  "FB",  
+                bottom: "IG",  
+                left:   "YT" 
+            },
+
+            // 🌟 已修正為純網址字串格式，絕不卡死、絕不破圖
+            icons: {
+                top:    "https://ibb.co", 
+                right:  "https://ibb.co",   
+                bottom: "https://ibb.co", 
+                left:   "https://ibb.co"  
+            },
+
+            // 點擊壘包後跳轉的目標網址
+            links: {
+                top:    "https://google.com", 
+                right:  "https://facebook.com",   
+                bottom: "https://instagram.com",  
+                left:   "https://youtube.com"     
+            }
+        };
+
+        // 初始化設定，將文字和圖片渲染到網頁上
+        document.getElementById('topText').innerText = config.labels.top;
+        document.getElementById('topIcon').src = config.icons.top;
+
+        document.getElementById('rightText').innerText = config.labels.right;
+        document.getElementById('rightIcon').src = config.icons.right;
+
+        document.getElementById('bottomText').innerText = config.labels.bottom;
+        document.getElementById('bottomIcon').src = config.icons.bottom;
+
+        document.getElementById('leftText').innerText = config.labels.left;
+        document.getElementById('leftIcon').src = config.icons.left;
+
+        // 純粹的點擊變色與原分頁跳轉邏輯（無動畫衝突）
+        function handleBaseClick(position) {
+            // 切換選取發光效果
+            document.querySelectorAll('.base-node').forEach(node => {
+                node.classList.remove('selected');
+            });
+            
+            const activeNode = document.querySelector(`.${position}-base`);
+            if (activeNode) {
+                activeNode.classList.add('selected');
             }
 
-            const diamond = document.getElementById('diamond');
-            if (!diamond) {
-                if (callback) callback();
-                return;
+            // 在當前分頁直接跳轉網址
+            if (config.links[position]) {
+                window.location.href = config.links[position];
             }
-            
-            const ball = document.createElement('img');
-            ball.src = config.baseballImageUrl;
-            ball.className = 'flying-ball';
-            
-            diamond.appendChild(ball);
-
-            const targetX = targetNode.offsetLeft + (targetNode.offsetWidth / 2) - (diamond.offsetWidth / 2);
-            const targetY = targetNode.offsetTop + (targetNode.offsetHeight / 2) - (diamond.offsetHeight / 2);
-
-            setTimeout(() => {
+        }
+    </script>
+</body>
+</html>
