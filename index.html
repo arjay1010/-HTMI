@@ -164,7 +164,6 @@
             left: 50%;
             margin-top: -16px;
             margin-left: -16px;
-            /* 投球動畫飛行速度（0.4秒） */
             transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
@@ -193,7 +192,6 @@
             <!-- 中央放大版裝飾圓圈 -->
             <div class="center-mound"></div>
             
-            <!-- 傳入 event 參數確保點擊時能被攔截延遲 -->
             <!-- 頂部壘包 -->
             <div class="base-node top-base" onclick="handleBaseClick(event, 'top')">
                 <div class="base-content">
@@ -277,13 +275,13 @@
 
         // 處理壘包點擊跳轉與發光效果
         function handleBaseClick(e, position) {
-            // 核心修改：攔截點擊事件，阻止它立刻跳轉
-            e.preventDefault();
+            // 攔截點擊事件，阻止它立刻跳轉
+            if (e) e.preventDefault();
 
             const activeNode = document.querySelector(`.${position}-base`);
             if (!activeNode) return;
 
-            // 先讓球完整飛過去
+            // 執行投球動態特效
             throwBaseball(activeNode, function() {
                 // 球到了，亮起發光效果
                 document.querySelectorAll('.base-node').forEach(node => {
@@ -291,7 +289,7 @@
                 });
                 activeNode.classList.add('selected');
 
-                // 動畫演完 0.4 秒後，這時候才允許網頁執行跳轉網址
+                // 動畫演完後，執行同分頁換頁跳轉
                 if (config.links[position]) {
                     window.location.href = config.links[position];
                 }
@@ -300,13 +298,17 @@
 
         // ⚾ 動態投球核心邏輯
         function throwBaseball(targetNode, callback) {
-            // 如果你還沒填圖片網址，就不播動畫直接跳轉網頁
+            // 防呆機制：如果你還沒填圖片網址，直接跳過動畫去跳轉網頁
             if (!config.baseballImageUrl) {
                 if (callback) callback();
                 return;
             }
 
             const diamond = document.getElementById('diamond');
+            if (!diamond) {
+                if (callback) callback();
+                return;
+            }
             
             const ball = document.createElement('img');
             ball.src = config.baseballImageUrl;
@@ -315,4 +317,3 @@
             diamond.appendChild(ball);
 
             // 計算目標壘包位置
-            const targetX = targetNode.offsetLeft + (targetNode.offsetWidth / 2) - (diamond.offsetWidth / 2);
