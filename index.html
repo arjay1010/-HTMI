@@ -26,7 +26,7 @@
             /* 🏆 核心修改：設定滿版背景圖片 */
             /* linear-gradient 是一層黑色的半透明遮罩(75%黑)，可以壓暗背景圖，突顯前方的金色壘包 */
             background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), 
-                              url('https://i.ibb.co/1fgg4X6v/Firefly-Cinematic-sports-poster-baseball-team-standing-with-their-backs-to-the-camera-the-p-945519.png');
+                              url('https://i.ibb.co/gFmFm1Qv/STRAY-1.png');
             
             /* 讓背景圖完美適配所有螢幕大小、不變形、且不重複 */
             background-size: cover;
@@ -150,38 +150,64 @@
             box-shadow: 0 0 25px #d4af37;
             transform: translate(-50%, -50%) scale(1.2);
         }
-        /* 🏆 專屬修改：將本壘按鈕定位精準下移，死死貼齊金色實線黃金交會點 */
+                /* 🏆 終極修正版：利用雙層五角形疊加，強行逼出全閉合金色邊框 */
         .base-home {
-            /* 
-               🏆 關鍵位置修正：
-               原本是 bottom: 0 導致中心點歪掉。
-               現在我們改用 bottom: -44px（正好是高的一半），讓本壘板的上平邊精準對齊交會點！
-            */
+            position: absolute;
             bottom: -44px !important; 
             left: 50%;
             transform: translateX(-50%) rotate(0deg) !important;
             width: 88px;
             height: 88px;
             
-            /* 利用 5 個精密座標點，剪切出完美的本壘五角形 */
+            /* ✨ 關鍵修改一：移除原本正方形的 border 設定，改由背景和剪裁來做出金色底層 */
+            border: none !important;
+            background: #d4af37 !important; /* 這個底色會變成未來的金色邊框 */
             clip-path: polygon(0% 0%, 100% 0%, 100% 45%, 50% 100%, 0% 45%);
-            background: #111;
-            border: 2px solid #d4af37;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-decoration: none;
+            color: #fff;
         }
         
-        /* 修正懸停時的縮放特效，確保軸心對齊，放大時不會向上移位 */
-        .base-home:hover {
-            transform: translateX(-50%) rotate(0deg) scale(1.1) !important;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
+        /* ✨ 關鍵修改二：利用偽元素在上方疊加一個小 2 像素的黑色五角形，藉此露出周圍的金色邊框 */
+        .base-home::after {
+            content: '';
+            position: absolute;
+            /* 🏆 四周精準往內縮小 2 像素（這就是邊框的粗細） */
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            bottom: 2px;
+            background: #111; /* 內部按鈕的黑底色 */
+            /* 保持一模一樣的五角形剪裁比例 */
+            clip-path: polygon(0% 0%, 100% 0%, 100% 45%, 50% 100%, 0% 45%);
+            z-index: 1;
+            transition: background 0.3s ease;
+        }
+
+        /* 當滑鼠懸停在本壘上時，背景變亮 */
+        .base-home:hover::after {
             background: #222;
         }
-
-        /* 確保內部的圖標與文字絕對置中 */
-        .base-home .base-content-inner {
-            transform: rotate(0deg) !important;
-            padding-bottom: 12px; /* 微調內部間距，避開下方尖角 */
+        
+        /* 修正懸停時的縮放與發光特效，確保下方的尖角也能同步散發金色微光 */
+        .base-home:hover {
+            transform: translateX(-50%) rotate(0deg) scale(1.1) !important;
+            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.8)); /* 利用智慧濾鏡，強迫五角形全身發光 */
         }
 
+        /* 🏆 關鍵修正：內容容器必須浮在最表層 (z-index: 2)，才不會被黑色遮罩蓋住 */
+        .base-home .base-content-inner {
+            position: relative;
+            z-index: 2;
+            transform: rotate(0deg) !important;
+            padding-bottom: 12px; /* 微調內部間距，讓圖標與文字完美居中 */
+            width: 100%;
+            height: 100%;
+        }
 
     </style>
 </head>
