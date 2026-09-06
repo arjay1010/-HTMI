@@ -150,29 +150,38 @@
             box-shadow: 0 0 25px #d4af37;
             transform: translate(-50%, -50%) scale(1.2);
         }
-                /* 🏆 專屬修改：將本壘按鈕轉正，並使用 clip-path 裁剪出標準棒球本壘板五角形 */
+        /* 🏆 專屬修改：將本壘按鈕定位精準下移，死死貼齊金色實線黃金交會點 */
         .base-home {
-            /* 覆蓋原本一到三壘的菱形設定，讓它正向站立並稍微加寬符合本壘板比例 */
+            /* 
+               🏆 關鍵位置修正：
+               原本是 bottom: 0 導致中心點歪掉。
+               現在我們改用 bottom: -44px（正好是高的一半），讓本壘板的上平邊精準對齊交會點！
+            */
+            bottom: -44px !important; 
+            left: 50%;
             transform: translateX(-50%) rotate(0deg) !important;
             width: 88px;
             height: 88px;
             
-            /* ✨ 核心黑科技：利用 5 個精密座標點，直接在網頁上剪切出完美的本壘五角形 */
+            /* 利用 5 個精密座標點，剪切出完美的本壘五角形 */
             clip-path: polygon(0% 0%, 100% 0%, 100% 45%, 50% 100%, 0% 45%);
+            background: #111;
+            border: 2px solid #d4af37;
         }
         
-        /* 修正懸停時的縮放特效，確保本壘不會因為 rotate(45deg) 轉回去 */
+        /* 修正懸停時的縮放特效，確保軸心對齊，放大時不會向上移位 */
         .base-home:hover {
             transform: translateX(-50%) rotate(0deg) scale(1.1) !important;
             box-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
             background: #222;
         }
 
-        /* 🏆 關鍵修正：因為本壘外框已經是正的(0度)了，裡面的內容不需要再旋轉，直接校正回 0 度絕對置中 */
+        /* 確保內部的圖標與文字絕對置中 */
         .base-home .base-content-inner {
             transform: rotate(0deg) !important;
-            padding-bottom: 12px; /* 微調內部間距，讓圖標往上移一點點，完美避開本壘板下方的尖角 */
+            padding-bottom: 12px; /* 微調內部間距，避開下方尖角 */
         }
+
 
     </style>
 </head>
