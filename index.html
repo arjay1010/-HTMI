@@ -11,14 +11,31 @@
             margin: 0;
             padding: 0;
         }
+               /* --- 全域重設（✨已升級：支援高質感滿版背景圖＋暗色濾鏡） --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
         body, html {
             width: 100%;
             height: 100%;
             font-family: "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
-            background-color: #000; /* 保持高質感全黑背景 */
-            color: #fff;
             overflow: hidden; /* 防止獨立頁面產生不必要的滾動條 */
+            
+            /* 🏆 核心修改：設定滿版背景圖片 */
+            /* linear-gradient 是一層黑色的半透明遮罩(75%黑)，可以壓暗背景圖，突顯前方的金色壘包 */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), 
+                              url('https://i.ibb.co/1fgg4X6v/Firefly-Cinematic-sports-poster-baseball-team-standing-with-their-backs-to-the-camera-the-p-945519.png');
+            
+            /* 讓背景圖完美適配所有螢幕大小、不變形、且不重複 */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: #000; /* 當圖片還沒載入出來時的備用黑底 */
         }
+
 
         /* --- 🏆 核心獨立容器：讓整個球場在視窗中百分之百絕對居中 --- */
         .baseball-standalone-container {
