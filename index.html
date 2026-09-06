@@ -3,158 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STRAY 棒球互動儀表板</title>
+    <title>棒球內野壘包主控選單</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body, html { width: 100%; height: 100%; overflow: hidden; background-color: #000; font-family: sans-serif; }
+        /* --- 全域重設 --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body, html {
+            width: 100%;
+            height: 100%;
+            font-family: "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+            background-color: #000; /* 保持高質感全黑背景 */
+            color: #fff;
+            overflow: hidden; /* 防止獨立頁面產生不必要的滾動條 */
+        }
+
+        /* --- 🏆 核心獨立容器：讓整個球場在視窗中百分之百絕對居中 --- */
+        .baseball-standalone-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100vh;
+            padding: 40px;
+        }
         
-        /* YouTube 全螢幕滿版背景 */
-        .video-background {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; overflow: hidden; pointer-events: none;
+        /* 鎖定球場最外圍容器尺寸，支援動態等比例自適應縮放 */
+        .field-wrapper {
+            position: relative;
+            width: 75vmin;  
+            height: 75vmin;
+            max-width: 550px;
+            max-height: 550px;
         }
-        .video-background iframe {
-            position: absolute; top: 50%; left: 50%; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; transform: translate(-50%, -50%);
+        
+        /* 繪製完美金黃色實線內野 */
+        .diamond-lines {
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            width: 70%;
+            height: 70%;
+            border: 2px solid rgba(212, 175, 55, 0.8); 
+            transform: rotate(45deg);
+            z-index: 1;
         }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: -1; }
-        .container { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
-
-        /* 完美 RWD 縮放外框與壘包 */
-              .large-diamond-orbit {
-            position: relative; 
-            width: 50vmin; /* 👈 改成 50vmin，讓左右壘包往內縮 */
-            height: 50vmin; /* 👈 這裡也要同步改成 50vmin 保持正菱形 */
-            max-width: 480px;
-            max-height: 480px;
-            min-width: 250px; /* 這裡可以微調縮小到 250px 確保極小手機也能看 */
-            min-height: 250px;
-
+        
+        /* 投手丘中央圈圈定位 */
+        .center-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border: 2px solid #d4af37;
+            border-radius: 50%;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.6);
+            transition: 0.5s;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
         }
-        .base-node {
-            position: absolute; width: 12vmin; height: 12vmin; max-width: 85px; max-height: 85px; min-width: 60px; min-height: 60px; background-color: rgba(15, 15, 15, 0.9); border: 3px solid #b89742; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6); cursor: pointer; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); z-index: 10;
+        
+        /* 🏆 壘包按鈕：維持標準正方形，並利用 rotate(45deg) 轉成完美菱形 */
+        .base-card {
+            position: absolute;
+            width: 85px;
+            height: 85px;
+            background: #111;
+            border: 2px solid #d4af37;
+            border-radius: 8px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 3;
+            text-decoration: none;
+            color: #fff;
         }
-        .base-content {
-            transform: rotate(-45deg); display: flex; flex-direction: column; justify-content: center; align-items: center; color: #b89742; text-align: center; width: 100%; height: 100%; padding: 5px;
+        
+        /* 🏆 內容包裹容器：用來把圖片和文字轉回來 (-45deg)，強制水平垂直絕對置中 */
+        .base-content-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(-45deg); /* 反向旋轉，字才不會跟著歪斜 */
+            width: 100%;
+            height: 100%;
         }
-        .base-icon-img {
-            width: 4.5vmin; height: 4.5vmin; max-width: 32px; max-height: 32px; min-width: 22px; min-height: 22px; object-fit: contain; margin-bottom: 4px; transition: transform 0.3s ease;
+        
+        /* 限定圖標的最大寬高，絕不允許集體爆開破圖 */
+        .base-content-inner img {
+            width: 28px;
+            height: 28px;
+            margin-bottom: 4px;
+            object-fit: contain;
+            display: block;
         }
-        .base-text { font-size: 1.6vmin; font-weight: 900; letter-spacing: 1px; white-space: nowrap; }
-        @media (min-width: 1024px) { .base-text { font-size: 11px; } }
-        @media (max-width: 480px) { .base-text { font-size: 10px; } }
-
-        /* 懸停與點擊發光動畫 */
-        .base-node:hover { transform: scale(1.15); background-color: #b89742; box-shadow: 0 0 25px #b89742; border-color: #fff; }
-        .base-node:hover .base-content { color: #000; }
-        .base-node:hover .base-icon-img { transform: scale(1.1); }
-        .base-node.selected { transform: scale(1.25); background-color: #fff; border-color: #b89742; box-shadow: 0 0 35px #fff, 0 0 15px #b89742; animation: pulse 0.5s infinite alternate; }
-        .base-node.selected .base-content { color: #000; }
-
-        /* 四個角落壘包精準定位與縮放位移修正 */
-        .top-base { top: 0; left: 0; transform: translate(-50%, -50%); }
-        .right-base { top: 0; right: 0; transform: translate(50%, -50%); }
-        .bottom-base { bottom: 0; right: 0; transform: translate(50%, 50%); }
-        .left-base { bottom: 0; left: 0; transform: translate(-50%, 50%); }
-        .top-base:hover { transform: translate(-50%, -50%) scale(1.15); }
-        .right-base:hover { transform: translate(50%, -50%) scale(1.15); }
-        .bottom-base:hover { transform: translate(50%, 50%) scale(1.15); }
-        .left-base:hover { transform: translate(-50%, 50%) scale(1.15); }
-        .top-base.selected { transform: translate(-50%, -50%) scale(1.25); }
-        .right-base.selected { transform: translate(50%, -50%) scale(1.25); }
-        .bottom-base.selected { transform: translate(50%, 50%) scale(1.25); }
-        .left-base.selected { transform: translate(-50%, 50%) scale(1.25); }
-
-        /* 中央大圓形裝飾 */
-        .center-mound {
-            position: absolute; width: 8vmin; height: 8vmin; max-width: 60px; max-height: 60px; min-width: 40px; min-height: 40px; border: 2px solid rgba(184, 151, 66, 0.6); background-color: rgba(20, 20, 20, 0.5); box-shadow: inset 0 0 10px rgba(184, 151, 66, 0.3); pointer-events: none; border-radius: 50%;
+        
+        .base-content-inner span {
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #d4af37;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            text-align: center;
+            display: block;
+            width: 100%;
         }
-        @keyframes pulse { 0% { box-shadow: 0 0 20px #fff; } 100% { box-shadow: 0 0 40px #b89742; } }
+        
+        /* 🏆 四個壘包在球場邊角的精密定位與基礎 45 度旋轉（完美融入動畫與排版） */
+        .base-2nd { top: 0; left: 50%; transform: translateX(-50%) rotate(45deg); }                       
+        .base-2nd:hover { transform: translateX(-50%) rotate(45deg) scale(1.1); box-shadow: 0 0 20px rgba(212, 175, 55, 0.8); background: #222; }
+        
+        .base-3rd { top: 50%; left: 0; transform: translateY(-50%) rotate(45deg); }                       
+        .base-3rd:hover { transform: translateY(-50%) rotate(45deg) scale(1.1); box-shadow: 0 0 20px rgba(212, 175, 55, 0.8); background: #222; }
+        
+        .base-1st { top: 50%; right: 0; transform: translateY(-50%) rotate(45deg); }                      
+        .base-1st:hover { transform: translateY(-50%) rotate(45deg) scale(1.1); box-shadow: 0 0 20px rgba(212, 175, 55, 0.8); background: #222; }
+        
+        .base-home { bottom: 0; left: 50%; transform: translateX(-50%) rotate(45deg); }                  
+        .base-home:hover { transform: translateX(-50%) rotate(45deg) scale(1.1); box-shadow: 0 0 20px rgba(212, 175, 55, 0.8); background: #222; }
+        
+        /* 當滑鼠懸停在任一按鈕上時，中央圓圈的共振發光特效 */
+        .base-card:hover ~ .center-circle {
+            box-shadow: 0 0 25px #d4af37;
+            transform: translate(-50%, -50%) scale(1.2);
+        }
     </style>
 </head>
 <body>
 
-    <div class="video-background">
-        <iframe id="ytPlayer" src="" frameborder="0" allow="autoplay; encrypted-media;" allowfullscreen></iframe>
-    </div>
-    <div class="overlay"></div>
-
-    <div class="container">
-        <div class="large-diamond-orbit">
-            <div class="center-mound"></div>
+    <!-- 獨立版球場主區塊 -->
+    <div class="baseball-standalone-container">
+        <div class="field-wrapper">
             
-            <div class="base-node top-base" onclick="handleBaseClick('top')">
-                <div class="base-content">
-                    <img id="topIcon" class="base-icon-img" src="" alt="icon"><span id="topText" class="base-text"></span>
+            <!-- 金黃色內野線 -->
+            <div class="diamond-lines"></div>
+
+            <!-- 二壘：Instagram（開啟新分頁） -->
+            <a href="https://instagram.com" target="_blank" class="base-card base-2nd">
+                <div class="base-content-inner">
+                    <img src="https://flaticon.com" alt="IG">
+                    <span>IG</span>
                 </div>
-            </div>
-            <div class="base-node right-base" onclick="handleBaseClick('right')">
-                <div class="base-content">
-                    <img id="rightIcon" class="base-icon-img" src="" alt="icon"><span id="rightText" class="base-text"></span>
+            </a>
+
+            <!-- 三壘：YouTube（開啟新分頁） -->
+            <a href="https://youtube.com" target="_blank" class="base-card base-3rd">
+                <div class="base-content-inner">
+                    <img src="https://flaticon.com" alt="YT">
+                    <span>YT</span>
                 </div>
-            </div>
-            <div class="base-node bottom-base" onclick="handleBaseClick('bottom')">
-                <div class="base-content">
-                    <img id="bottomIcon" class="base-icon-img" src="" alt="icon"><span id="bottomText" class="base-text"></span>
+            </a>
+
+            <!-- 一壘：Facebook（開啟新分頁） -->
+            <a href="https://facebook.com" target="_blank" class="base-card base-1st">
+                <div class="base-content-inner">
+                    <img src="https://flaticon.com" alt="FB">
+                    <span>FB</span>
                 </div>
-            </div>
-            <div class="base-node left-base" onclick="handleBaseClick('left')">
-                <div class="base-content">
-                    <img id="leftIcon" class="base-icon-img" src="" alt="icon"><span id="leftText" class="base-text"></span>
+            </a>
+
+            <!-- 本壘：回主網頁（因為是獨立頁面，這裡可以直接設定回您主網頁的檔名，如 index.html） -->
+            <a href="index.html" target="_self" class="base-card base-home">
+                <div class="base-content-inner">
+                    <img src="https://flaticon.com" alt="首頁">
+                    <span>首頁</span>
                 </div>
-            </div>
+            </a>
+
+            <!-- 中央圈圈：投手丘 -->
+            <div class="center-circle"></div>
+
         </div>
     </div>
 
-    <script>
-        // ==========================================================
-        // 🔥【超直覺全面自訂設定區】請在這裡修改您的所有字體與網址
-        // ==========================================================
-        const config = {
-            youtubeVideoId: "3qV05Bhzek4", // STRAY 形象影片 ID
-            labels: {
-                top:    "YT",  
-                right:  "IG",  
-                bottom: "首頁",  
-                left:   "FB" 
-            },
-            icons: {
-                top:    "https://i.ibb.co/LXN2tf5N/960px-You-Tube-full-color-icon-2017-svg.webp",
-                right:  "https://i.ibb.co/0j5RpbFs/500px-Instagram-icon.webp",
-                bottom: "https://i.ibb.co/rCptGSd/STRAYICON.png",
-                left:   "https://i.ibb.co/W4K1DWsJ/500px-2023-Facebook-icon-svg.webp"
-            },
-            links: {
-                top:    "https://www.youtube.com/@Stray%E6%A3%92%E7%90%83%E9%9A%8A",
-                right:  "https://www.instagram.com/stray.official.baseball/",
-                bottom: "https://sites.google.com/view/straybaseball-team/%E9%A6%96%E9%A0%81?authuser=0",
-                left:   "https://www.facebook.com/groups/1057300540985213/posts/26518693757752541/"
-            }
-        };
-
-        // ==========================================================
-        // ⚙️ 系統核心渲染與跳轉邏輯（已全面整合，請勿更動）
-        // ==========================================================
-        const ytUrl = `https://youtube.com/embed/${config.youtubeVideoId}?autoplay=1&mute=1&loop=1&playlist=${config.youtubeVideoId}&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&enablejsapi=1`;
-        document.getElementById('ytPlayer').src = ytUrl;
-
-        // 載入文字與圖片
-        document.getElementById('topText').innerText = config.labels.top;
-        document.getElementById('rightText').innerText = config.labels.right;
-        document.getElementById('bottomText').innerText = config.labels.bottom;
-        document.getElementById('leftText').innerText = config.labels.left;
-        document.getElementById('topIcon').src = config.icons.top;
-        document.getElementById('rightIcon').src = config.icons.right;
-        document.getElementById('bottomIcon').src = config.icons.bottom;
-        document.getElementById('leftIcon').src = config.icons.left;
-
-        // 本頁跳轉處理函數 (修正了剛才截圖中缺少的反單引號 ` `)
-        function handleBaseClick(position) {
-            const eventTarget = document.querySelector(`.${position}-base`);
-            document.querySelectorAll('.base-node').forEach(node => node.classList.remove('selected'));
-            eventTarget.classList.add('selected');
-            setTimeout(() => {
-                window.location.href = config.links[position];
-            }, 500);
-        }
-    </script>
 </body>
 </html>
