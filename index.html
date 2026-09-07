@@ -254,24 +254,23 @@
         /* 📱 專屬手機版 RWD 終極優化：縮小壘包釋放間距、完整還原背景圖 */
         @media (max-width: 768px) {
 
-                        /* 1. 🏆 核心修改：不使用完全縮小，而是手動控制放大比例，讓圖片縮小一圈、露出更多內容 */
-            /* 1. 🏆 核心修改：將背景圖片從中央移到最底部對齊，消滅底端的黑色死角 */
+            /* 1. 🏆 核心修改：將手機版背景徹底獨立，換成一張跟電腦版完全不同的新照片 */
             body, html {
                 /* 
-                   ✨ 關鍵修改：
-                   從 contain 改回百分比（例如 140%）。
-                   數字越小，背景圖就會縮得越小、看得到的字和狼爪就越多！
-                   如果覺得還是太大，您可以把它改成 120% 或 110%。
+                   ✨ 關鍵修改點：
+                   linear-gradient(rgba(0,0,0,0.4)...) 同步保留 40% 暗色濾鏡，維持精緻質感。
+                   url('...') 的括號內，請直接填入您想在手機上顯示的「全新照片名稱或網址」！
                 */
-                background-size: 200% auto !important; 
-                background-position: center center !important;
+                background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                                  url('https://i.ibb.co/Q7GKMsy6/STRAY.png') !important; 
+                
+                /* 根據您的喜好，手機版可以設定 140% 縮放、靠底對齊，確保新照片完美展現 */
                 background-size: 140% auto !important; 
-                /* 📌 關鍵修改：從 center center 改為 center bottom，強迫圖片死死貼齊手機最底端 */
                 background-position: center bottom !important; 
                 background-repeat: no-repeat !important;
-                background-color: #000; /* 四周緩衝的純黑底色 */
-                background-color: #000; /* 讓多出來的黑色緩衝區全部挪到最頂端 */
+                background-color: #000; 
             }
+
 
 
             /* 2. 🏆 核心修改：將球場最外圍容器縮小一點，留出四周的透視空間 */
