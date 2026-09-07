@@ -284,7 +284,7 @@
                 margin-bottom: 1.2px !important;
             }
             .base-content-inner span {
-                font-size: 0.65rem !important;
+                font-size: 0.9rem !important;
             }
 
             /* 4. 🏆 核心修改：同步將本壘五角形縮小到 68px，並修正溢出定位 */
@@ -313,13 +313,75 @@
                 height: 35px !important;
             }
         }
+        /* 🏆 專屬樣式：全黑質感前置載入動畫層 */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000; /* 全黑高級感底色 */
+            z-index: 9999; /* 🏆 核心設定：確保它鎖在全網頁的最最上層，蓋住所有壘包 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            /* 離開時的滑動與淡出特效 */
+            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.6s ease;
+        }
+
+        /* LOGO 圖片的控制外觀 */
+        .loading-logo {
+            width: 120px; /* 載入畫面的 LOGO 大小，可自由微調 */
+            height: auto;
+            object-fit: contain;
+            /* 自帶細緻的金色微光充能呼吸燈特效 */
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3));
+            animation: logo-pulse 2s infinite ease-in-out;
+        }
+
+        /* 數字百分比的金色硬派字體 */
+        .loading-counter {
+            font-family: "Impact", "Helvetica Neue", Arial, sans-serif;
+            color: #d4af37; /* 延續您的黑金調性 */
+            font-size: 2.2rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+        }
+
+        /* 當載入完成後，觸發此類別讓畫面向上流暢滑開並隱藏 */
+        .loading-screen.fade-out-launcher {
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none; /* 解鎖觸控，讓使用者可以點擊後方的壘包 */
+        }
+
+        /* LOGO 呼吸燈動畫效果 */
+        @keyframes logo-pulse {
+            0% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3)); }
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 25px rgba(212, 175, 55, 0.7)); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3)); }
+        }
+
+        /* 📱 手機版微調：數字跟 LOGO 稍微縮小，看起來更精緻 */
+        @media (max-width: 768px) {
+            .loading-logo { width: 90px; }
+            .loading-counter { font-size: 1.8rem; }
+        }
 
     </style>
 </head>
 <body>
 
-    <!-- 🏆 關鍵核心修改：在網頁最底層新增這個專屬的視差背景層 -->
-    <div class="parallax-bg-layer" id="bg-layer"></div>
+    <!-- 🏆 關鍵核心修改：在網頁最頂層插入這個載入動畫結構 -->
+    <div class="loading-screen" id="loader-screen">
+        <!-- 📌 src 裡請更換為您要放的 LOGO 圖片網址或放在 GitHub 上的檔名（如 logo.png） -->
+        <img src="https://i.ibb.co/rCptGSd/STRAYICON.png" class="loading-logo" alt="LOGO">
+        <!-- 跑動的數字百分比數字 -->
+        <div class="loading-counter" id="loader-counter">0%</div>
+    </div>
 
     <!-- 獨立版球場主區塊 -->
     <div class="baseball-standalone-container">
@@ -353,19 +415,47 @@
             </a>
 
             <!-- 本壘：回首頁 -->
-            <a href="ihttps://sites.google.com/view/straybaseball-team/%E9%A6%96%E9%A0%81-home?authuser=0" target="_self" class="base-card base-home">
+            <a href="https://sites.google.com/view/straybaseball-team/%E9%A6%96%E9%A0%81-home?authuser=0" target="_self" class="base-card base-home">
                 <div class="base-content-inner">
                     <img src="https://i.ibb.co/rCptGSd/STRAYICON.png" alt="首頁">
                     <span>首頁</span>
                 </div>
             </a>
-
             <!-- 中央圈圈：投手丘 -->
             <div class="center-circle"></div>
 
         </div>
     </div>
-    
+
+    <!-- 🏆 智慧型數字跑動與進場解鎖控制腳本 -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const counterElement = document.getElementById("loader-counter");
+            const loaderScreen = document.getElementById("loader-screen");
+            
+            let currentPercent = 0;
+            
+            // 🏆 核心定時器：控制數字增加的速度
+            // 每 20 毫秒跑一次，整個計時動畫大約會在 1.5 到 2 秒內帥氣跑完
+            const progressInterval = setInterval(() => {
+                // 每次隨機增加 1~4%，讓數字跳動看起來有高科技加載的智慧動態感
+                currentPercent += Math.floor(Math.random() * 3) + 1;
+                
+                // 確保數值絕對不會超越 100%
+                if (currentPercent >= 100) {
+                    currentPercent = 100;
+                    clearInterval(progressInterval); // 數到 100% 後立刻鎖定、停止定時器
+                    
+                    // 延續質感：抵達 100% 後稍微短暫停留 250 毫秒，接著觸發帥氣的滑開動畫
+                    setTimeout(() => {
+                        loaderScreen.classList.add("fade-out-launcher");
+                    }, 250);
+                }
+                
+                // 即時將更新後的數字渲染印到畫面上
+                counterElement.textContent = currentPercent + "%";
+            }, 20);
+        });
+    </script>
 </body>
 </html>
-
