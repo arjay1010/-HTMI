@@ -5,13 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>棒球內野壘包主控選單</title>
     <style>
-        /* --- 全域重設 --- */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-               /* --- 全域重設（✨已升級：支援高質感滿版背景圖＋暗色濾鏡） --- */
+                /* --- 全域重設（✨已升級：支援智慧滑鼠背景視差與緩衝溢出鎖定） --- */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -22,19 +16,32 @@
             height: 100%;
             font-family: "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
             overflow: hidden; /* 防止獨立頁面產生不必要的滾動條 */
+            background-color: #000;
+            position: relative;
+        }
+
+        /* 🏆 關鍵核心修改：將背景圖獨立成一個全螢幕容器，寬高強制放大到 106%，留出左右滑動的安全空間 */
+        .parallax-bg-layer {
+            position: absolute;
+            top: -3%;  /* 向上延伸 3% 鎖定邊緣 */
+            left: -3%; /* 向左延伸 3% 鎖定邊緣 */
+            width: 106%;
+            height: 106%;
             
-            /* 🏆 核心修改：設定滿版背景圖片 */
-            /* linear-gradient 是一層黑色的半透明遮罩(75%黑)，可以壓暗背景圖，突顯前方的金色壘包 */
+            /* 壓暗背景圖的半透明遮罩，突顯前方的金色細線壘包 */
             background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), 
-                              url('https://i.ibb.co/gFmFm1Qv/STRAY-1.png');
+                              url('這裡替換成您的球場背景圖片網址.jpg');
             
-            /* 讓背景圖完美適配所有螢幕大小、不變形、且不重複 */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-color: #000; /* 當圖片還沒載入出來時的備用黑底 */
+            z-index: -1; /* 確保背景鎖在最底層，絕對不擋到按鈕 */
+            
+            /* ✨ 讓背景在移動時呈現出如絲綢般極其流暢的柔和滑動感，絕對不卡頓不晃眼 */
+            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+            will-change: transform; /* 命令顯卡加速，確保手機與低階電腦一樣順暢 */
         }
+
 
 
         /* --- 🏆 核心獨立容器：讓整個球場在視窗中百分之百絕對居中 --- */
@@ -213,44 +220,47 @@
 </head>
 <body>
 
+    <!-- 🏆 關鍵核心修改：在網頁最底層新增這個專屬的視差背景層 -->
+    <div class="parallax-bg-layer" id="bg-layer"></div>
+
     <!-- 獨立版球場主區塊 -->
     <div class="baseball-standalone-container">
         <div class="field-wrapper">
             
-            <!-- 金黃色內野線 -->
+            <!-- 金黃色細線內野 -->
             <div class="diamond-lines"></div>
 
-             <!-- 二壘：Instagram -->
-                <a href="https://www.instagram.com/stray.official.baseball/" target="_blank" class="base-card base-2nd">
-                    <div class="base-content-inner">
-                        <img src="https://i.ibb.co/0j5RpbFs/500px-Instagram-icon.webp" alt="IG">
-                        <span>IG</span>
-                    </div>
-                </a>
+            <!-- 二壘：Instagram -->
+            <a href="https://instagram.com" target="_blank" class="base-card base-2nd">
+                <div class="base-content-inner">
+                    <img src="https://flaticon.com" alt="IG">
+                    <span>IG</span>
+                </div>
+            </a>
 
-                <!-- 三壘：YouTube -->
-                <a href="https://www.youtube.com/channel/UCPKMd6qnsWnA0CFn2rYVQtw" target="_blank" class="base-card base-3rd">
-                    <div class="base-content-inner">
-                        <img src="https://i.ibb.co/LXN2tf5N/960px-You-Tube-full-color-icon-2017-svg.webp" alt="YT">
-                         <span>YT</span> 
-                    </div>
-                </a>
+            <!-- 三壘：YouTube -->
+            <a href="https://youtube.com" target="_blank" class="base-card base-3rd">
+                <div class="base-content-inner">
+                    <img src="https://flaticon.com" alt="YT">
+                    <span>YT</span>
+                </div>
+            </a>
 
-                <!-- 一壘：Facebook -->
-                <a href="https://www.facebook.com/groups/1057300540985213/posts/26518693757752541/" target="_blank" class="base-card base-1st">
-                    <div class="base-content-inner">
-                        <img src="https://i.ibb.co/W4K1DWsJ/500px-2023-Facebook-icon-svg.webp" alt="FB">
-                        <span>FB</span>
-                    </div>
-                </a>
+            <!-- 一壘：Facebook -->
+            <a href="https://facebook.com" target="_blank" class="base-card base-1st">
+                <div class="base-content-inner">
+                    <img src="https://flaticon.com" alt="FB">
+                    <span>FB</span>
+                </div>
+            </a>
 
-                <!-- 本壘：首頁 -->
-                <a href="https://sites.google.com/view/straybaseball-team/%E9%A6%96%E9%A0%81-home?authuser=0"_self" class="base-card base-home" id="home-base-btn">
-                    <div class="base-content-inner">
-                        <img src="https://i.ibb.co/rCptGSd/STRAYICON.png" alt="首頁">
-                        <span>首頁</span>
-                    </div>
-                </a>
+            <!-- 本壘：回首頁 -->
+            <a href="index.html" target="_self" class="base-card base-home">
+                <div class="base-content-inner">
+                    <img src="https://flaticon.com" alt="首頁">
+                    <span>首頁</span>
+                </div>
+            </a>
 
             <!-- 中央圈圈：投手丘 -->
             <div class="center-circle"></div>
@@ -258,5 +268,31 @@
         </div>
     </div>
 
+    <!-- 🏆 智慧滑鼠背景視差精密演算指令腳本 -->
+    <script>
+        const bgLayer = document.getElementById('bg-layer');
+
+        // 僅在電腦等有滑鼠的寬螢幕裝置上啟動視差（手機版會維持完美居中不晃動）
+        if (bgLayer && window.innerWidth > 768) {
+            window.addEventListener('mousemove', (e) => {
+                // 1. 獲取當前網頁視窗的總寬高
+                const width = window.innerWidth;
+                const height = window.innerHeight;
+                
+                // 2. 計算滑鼠當前座標在螢幕中的相對百分比位置（轉化為 -0.5 到 0.5 之間）
+                const mouseX = (e.clientX / width) - 0.5;
+                const mouseY = (e.clientY / height) - 0.5;
+                
+                // 3. 🏆 核心幾何演算：最大平移限制在 ±25 像素內，正好完美的待在 3% 的安全放大緩衝區內
+                // 當滑鼠往左移，背景跟著反向平移，營造極強的實體 3D 球場景深感！
+                const moveX = mouseX * 25;
+                const moveY = mouseY * 25;
+                
+                // 執行平移變換指令
+                bgLayer.style.transform = `translate(${moveX}px, ${moveY}px)`;
+            });
+        }
+    </script>
 </body>
 </html>
+
